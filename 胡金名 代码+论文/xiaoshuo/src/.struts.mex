@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="default" location="0,0" size="0,0">
+    <action name="admin" location="0,0" size="0,0">
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="index.jsp" />
+      </result>
+      <result name="showall">
+        <resourceEdge source="showall" routing="0" target="adminlist.jsp" />
+      </result>
+    </action>
+    <action name="adminLogin" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="index.jsp" />
+      </result>
+      <result name="login">
+        <resourceEdge source="login" routing="0" target="login.jsp" />
+      </result>
+    </action>
+    <action name="book" location="0,0" size="0,0">
+      <result name="search">
+        <resourceEdge source="search" routing="0" target="searchBook.jsp" />
+      </result>
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="index.jsp" />
+      </result>
+      <result name="show">
+        <resourceEdge source="show" routing="0" target="bookList.jsp" />
+      </result>
+      <result name="beforeshow">
+        <resourceEdge source="beforeshow" routing="0" target="showBookPage.jsp" />
+      </result>
+      <result name="beforsearch">
+        <resourceEdge source="beforsearch" routing="0" target="searchResult.jsp" />
+      </result>
+      <result name="mybook">
+        <resourceEdge source="mybook" routing="0" target="mybook.jsp" />
+      </result>
+    </action>
+    <action name="article" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="articleList.jsp" />
+      </result>
+      <result name="read">
+        <resourceEdge source="read" routing="0" target="read.jsp" />
+      </result>
+      <result name="show">
+        <resourceEdge source="show" routing="0" target="articleList.jsp" />
+      </result>
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+      <result name="before">
+        <resourceEdge source="before" routing="0" target="articleList.jsp" />
+      </result>
+    </action>
+    <action name="discuss" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="discussList.jsp" />
+      </result>
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+    </action>
+    <action name="user" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="index.jsp" />
+      </result>
+      <result name="input">
+        <resourceEdge source="input" routing="0" target="login.jsp" />
+      </result>
+      <result name="ajaxlogin">
+        <resourceEdge source="ajaxlogin" routing="0" target="message.jsp" />
+      </result>
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+    </action>
+    <action name="literature" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="index.jsp" />
+      </result>
+    </action>
+    <action name="bookmark" location="0,0" size="0,0">
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+      <result name="show">
+        <resourceEdge source="show" routing="0" target="bookmark.jsp" />
+      </result>
+    </action>
+    <action name="progenitor" location="0,0" size="0,0">
+      <result name="doresult">
+        <resourceEdge source="doresult" routing="0" target="result.jsp" />
+      </result>
+      <result name="center">
+        <resourceEdge source="center" routing="0" target="personCenter.jsp" />
+      </result>
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="progenitor.jsp" />
+      </result>
+    </action>
+    <action name="download" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+  </package>
+  <webResource name="index.jsp" path="/index.jsp" location="0,0" size="0,0" />
+  <webResource name="articlelist.jsp" path="/articlelist.jsp" location="0,0" size="0,0" />
+  <webResource name="readonline.jsp" path="/readonline.jsp" location="0,0" size="0,0" />
+  <webResource name="index.jsp" path="/admin/index.jsp" location="0,0" size="0,0" />
+  <webResource name="result.jsp" path="/admin/result.jsp" location="0,0" size="0,0" />
+  <webResource name="login.jsp" path="/admin/login.jsp" location="0,0" size="0,0" />
+  <webResource name="adminlist.jsp" path="/admin/adminlist.jsp" location="0,0" size="0,0" />
+  <webResource name="bookList.jsp" path="/admin/book/bookList.jsp" location="0,0" size="0,0" />
+  <webResource name="articleList.jsp" path="/admin/book/articleList.jsp" location="0,0" size="0,0" />
+  <webResource name="articleList.jsp" path="/article/articleList.jsp" location="0,0" size="0,0" />
+  <webResource name="read.jsp" path="/article/read.jsp" location="0,0" size="0,0" />
+  <webResource name="discussList.jsp" path="/admin/discuss/discussList.jsp" location="0,0" size="0,0" />
+  <webResource name="login.jsp" path="/login.jsp" location="0,0" size="0,0" />
+  <webResource name="message.jsp" path="/message.jsp" location="0,0" size="0,0" />
+  <webResource name="searchBook.jsp" path="/admin/book/searchBook.jsp" location="0,0" size="0,0" />
+  <webResource name="result.jsp" path="/article/result.jsp" location="0,0" size="0,0" />
+  <webResource name="result.jsp" path="/result.jsp" location="0,0" size="0,0" />
+  <webResource name="bookmark.jsp" path="/book/bookmark.jsp" location="0,0" size="0,0" />
+  <webResource name="showBookPage.jsp" path="/book/showBookPage.jsp" location="0,0" size="0,0" />
+  <webResource name="searchResult.jsp" path="/book/searchResult.jsp" location="0,0" size="0,0" />
+  <webResource name="mybook.jsp" path="/person/mybook.jsp" location="0,0" size="0,0" />
+  <webResource name="articleList.jsp" path="/person/articleList.jsp" location="0,0" size="0,0" />
+  <webResource name="personCenter.jsp" path="/person/personCenter.jsp" location="0,0" size="0,0" />
+  <webResource name="progenitor.jsp" path="/progenitor.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

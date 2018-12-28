@@ -1,0 +1,288 @@
+CVS 简单教程
+
+v2.0 
+版权声明：本文档遵循 FDL 版权发布，有关 FDL 的详细信息，请参考： 
+http://www.fsf.org/copyleft/fdl.html 
+何伟平
+           CVS 是 Concurrent Version System（并行版本系统）的缩写，用于版本管理．如果大家曾经 
+          参与过多人协作开发的项目，大家肯定有这样的痛苦经历：由于多个人同时修改同一个文件， 
+          自己辛辛苦苦修改的程序被别人彻底删除了．另外，如果你的软件/程序已经发布了三个版本， 
+           而这时候用户需要你修改第二个版本的东西，也许你会因为只保留了最新版本而痛哭流涕． 
+           还有就是你对程序做了一些修改，但是修改很少，你只想给远方的同事发一个两个版本之间 
+           的差别文件，这样可以免于邮箱不够大，网速太慢之类的问题．为了解决类似这样的问题， 
+            以及诸如生成补丁文件，历史版本修改等，一帮黑客（褒义）在原先 Unix 体系里很成熟的 
+           SCCS 和 RCS 的基础上，开发了 CVS． 
+            (SCCS：Source Code Control System，RCS：Revision Control System） 
+           CVS 的基本工作思路是这样的：在一台服务器上建立一个仓库，仓库里可以存放许多不同项目的源程序．由仓库管理员统一管理这些源程序．这样，就好象只有一个人在修改文件一样．避免了冲突．每个用户在使用仓库之前，首先要把仓库里的项目文件下载到本地．用户做的任何修改首先都是在本地进行，然后用 cvs 命令进行提交，由 cvs 仓库管理员统一修改．这样就可以做到跟踪文件变化，冲突控制等等． 
+         由于 CVS 是典型的 C/S 结构的软件，因此它也分成服务器端和客户端两部分．不过大多数 
+         CVS 软件都把它们合二为一了． 
+  
+结合文档和一些网上资源，我写一点非常简单的＂速成＂的教材．希望对大家有用． 
+下面是我的步骤和做法． 
+1，要求： 
+•	root 权限； 
+•	CVS软件，请找到相关的rpm，tgz，deb 等包装上，或者到  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+http://www.cvshome.org/CVS/Dev/code 
+下载原程序编译安装，这里我不准备介绍它的安装，请参考CVS自身的文档安装． 
+我使用Slackware的tgz包，安装的命令是 
+#installpkg cvs*.tgz 
+其他包请参考对应包管理工具的命令． 
+•	一定的系统资源，要有一定内存（32M就能工作得很好），要一定的磁盘空间，看 
+你的项目的大小和多少而定．
+2，架设CVS服务器： 
+1.	建立CVSROOT目录，因为这里涉及到用户对CVSROOT里的文件读写的权限问题， 
+所以比较简单的方法是建立一个组，然后再建立一个属于该组的帐户，而且以后有 
+读写权限的用户都要属于该组．假设我们建一个组cvs，用户名cvsroot．建组和用 
+户的命令如下 
+#groupadd cvs 
+#adduser cvsroot
+生成的用户家目录在/home/cvsroot（根据自己的系统调整） 
+2.	用cvsroot用户登陆，修改 /home/cvsroot （CVSROOT）的权限，赋与同组人有读写 
+的权限： 
+$chmod 771 . （或者770应该也可以） 
+注意：这一部分工作是按照文档说明做的，是否一定需要这样没有试验，我 
+会在做试验后在以后版本的教程说得仔细一点．如果您有这方面的经验请提 
+供给我，谢谢． 
+ 
+3.	建立CVS仓库，（仍然是cvsroot用户），用下面命令： 
+$cvs    -d /home/cvsroot init
+4.	以root身份登陆，修改/etc/inetd.conf 和 /etc/services，分别加入下面一行： 
+在 /etc/inetd.conf 里加入： 
+cvsserver    stream    tcp    nowait    root    /usr/bin/cvs    cvs -f  --allow-root=/home/cvsroot pserver 
+说明：上面的行是单独一整行，/usr/bin/cvs 应该是你的cvs版本的命令路径， 
+请根据自己的系统调整．/home/cvsroot 是你建立的CVSROOT的路径，也请 
+根据上面建立目录的部分的内容做调整． 
+在/etc/services里加入： 
+cvsserver    2401/tcp 
+说明：cvsserver是任意的名称，但是不能和已有的服务重名，也要和上面修 
+改/etc/inetd.conf那行的第一项一致．这里我用的是CVS的口令认证方式， 
+CVS还有其他认证方式，我没有做试验，如果您有经验，请补充，谢谢． 
+ 
+5.	添加可以使用CVS服务的用户到cvs组： 
+以root身份修改/etc/group，把需要使用CVS的用户名加到cvs组里，比如我想 
+让用户laser和gumpwu能够使用CVS服务，那么修改以后的/etc/group应该有下 
+面这样一行： 
+cvs:x:105:laser,gumpwu 
+在你的系统上GID可能不是105，没有关系．主要是要把laser和gumpwu用逗号 
+分隔开写在最后一个冒号后面．当然，象RedHat等分发版有类似linuxconf这样 
+的工具的话，用工具做这件事会更简单些．
+6.	重起inetd使修改生效： 
+#killall -HUP inetd
+这样服务器就设置完成了．我们接着搞客户端． 
+3，设置客户端，如果是Linux（或者其他*nix），客户端和服务器端的软件是一样的，如果是 
+Win，MAC等平台，请到http://www.loria.fr/cgi-bin/molli/wilma.cgi/rel 找相应的客户端软件， 
+这里我先说一下在Linux（*nix）里怎么做： 
+1.	设置环境变量CVSROOT： 
+$export CVSROOT=:pserver:laser@the_server_name:/home/cvsroot 
+注意：这里的pserver是访问方式，我在上面设置的是口令认证，所以这里是 
+pserver，如果你的CVS服务器设置成别的访问模式，那么需要相应修改． 
+laser是可以使用 CVS服务器的用户名，这里可以根据你的设置修改，我在这 
+个版本设置的是直接使用系统用户的口令文件，也就是说laser必须是CVS服 
+务器上的合法用户，这里当然有安全问题，CVS可以设置成为拥有自己的用户， 
+我将在以后的版本里面增加这些内容，或者您也可以提供一些补充，或者直接 
+读CVS的文档．the_server_name是CVS服务器的名称或者IP地址，根据你的情 
+况填写，/home/cvsroot是你的CVS服务器的CVSROOT目录，根据你的CVS服务 
+器设置做修改或者询问管理员．你可以把这行放到你的shell的profile里 
+（.bash_profile，.profile等）这样就不用每次敲一长串命令了． 
+ 
+2.	登陆CVS服务器： 
+$cvs login，这时候cvs会问你口令，请把你在CVS服务器上的口令敲进去，这里 
+是laser在CVS服务器上的系统用户的口令： 
+ Passwd:xxxxxxxx 
+成功登陆后将在你的家目录建立一个.cvspass文件，以后就不用输入口令了．
+好，客户端设置完成，简单吧． 
+4，管理 cvs 服务器．服务器可以用了，现在大家最关心的就是如何管理服务器， 
+比如，我想让一些人有读和/或写 CVS 仓库的权限，但是不想给它系统权限怎么办呢？ 
+不难，在 cvs 管理员用户(在我这里是 cvsroot 用户)的家目录里有一个 CVSROOT 目录， 
+这个目录里有三个配置文件，passwd, readers, writers，我们可以通过设置这三个文件来 
+配置 CVS 服务器，下面分别介绍这几个文件的作用： 
+passwd：cvs 用户的用户列表文件，它的格式很象 shadow 文件： 
+{cvs 用户名}:[加密的口令]:[等效系统用户名] 
+如果你希望一个用户只是 cvs 用户，而不是系统用户，那么你就要设置这个文件，刚刚安装 
+完之后这个文件可能不存在，你需要以 cvs 管理员用户手工创建，当然要按照上面格式， 
+第二个字段是该用户的加密口令，就是用 crypt (3) 加密的，你可以自己写一个程序来做加密，也可以用我介绍的偷懒的方法：先创建一个系统用户，名字和 cvs 用户一样，口令就是 
+准备给它的 cvs 用户口令，创建完之后从 /etc/shadow 把该用户第二个字段拷贝过来，然后 
+再把这个用户删除．这个方法对付数量少的用户比较方便，人一多就不合适了，而且还有 
+冲突条件(race condition)的安全隐患，还要 root 权限，实在不怎么样．不过权益之计而已． 
+写一个小程序并不难，可以到 linuxforum 的编程版搜索一下，有个朋友已经写了一个贴在上面了． 
+第三个字段就是等效系统用户名，实际上就是赋与一个 cvs 用户一个等效的系统用户的权限，看下面的例子你就明白它的功能了． 
+readers：有 cvs 读权限的用户列表文件．就是一个一维列表．在这个文件中的用户对 cvs 
+只有读权限． 
+writers：有 cvs 写权限的用户的列表文件．和 readers 一样，是一个一维列表．在这个文件中的用户对 cvs 有写权限． 
+上面三个文件在缺省安装的时候可能都不存在，需要我们自己创建，好吧，现在还是让我们用一个例子来教学吧．假设我们有下面几个用户需要使用 cvs： 
+laser, gumpwu, henry, betty, anonymous． 
+其中 laser 和 gumpwu 是系统用户，而 henry, betty, anonymous 我们都不想给系统用户权限， 
+并且 betty 和 anonymous 都是只读用户，而且 anonymous 更是连口令都没有． 
+那么好，我们先做一些准备工作，先创建一个 cvspub 用户，这个用户的责任是代表所有 
+非系统用户的 cvs 用户读写 cvs 仓库． 
+#adduser  
+... 
+然后编辑 /etc/group，令 cvspub 用户在 cvs 组里，同时把其它有系统用户权限的用户加到 
+cvs 组里．（见上文） 
+然后编辑 cvs 管理员家目录里 CVSROOT/passwd 文件，加入下面几行： 
+laser:$xxefajfka;faffa33:cvspub 
+gumpwu:$ajfaal;323r0ofeeanv:cvspub 
+henry:$fajkdpaieje:cvspub 
+betty:fjkal;ffjieinfn/:cvspub 
+anonymous::cvspub 
+注意：上面的第二个字段（分隔符为 :）是密文口令，你要用程序或者用我的土办法生成． 
+编辑 readers 文件，加入下面几行： 
+anonymous 
+betty 
+编辑 writer 文件，加入下面几行： 
+laser 
+gumpwu 
+henry 
+这样就 ok 了，你再用几个用户分别登陆测试，就会发现一切都 ok 了． 
+这里面的原理和说明我想就不多说了，其实很简单，和系统管理用户的概念是一样的． 
+  
+  
+现在服务器和客户端都设置好了，那么怎么用呢，我在这里写一个最简单的（估计也是最常用 
+的）命令介绍： 
+首先，建立一个新的CVS项目，一般我们都已经有一些项目文件了，这样我们可以用下面步骤 
+生成一个新的CVS项目： 
+1.	进入到你的已有项目的目录，比如叫 cvstest： 
+$cd  cvstest
+2.	运行命令： 
+$cvs import -m "this is a cvstest project" cvstest     v_0_0_1     start 
+说明：import 是cvs的命令之一，表示向cvs仓库输入项目文件． 
+              -m参数后面的字串是描述文本，随便写些有意义的东西，如果不加 -m 参 
+数，那么cvs会自动运行一个编辑器（一般是vi，但是可以通过修改环境变量 
+EDITOR来改成你喜欢用的编辑器．）让你输入信息， 
+             cvstest 是项目名称（实际上是仓库名，在CVS服务器上会存储在以这个名字 
+命名的仓库里．） 
+             v_0_0_1是这个分支的总标记．没啥用（或曰不常用．） 
+             start 是每次 import 标识文件的输入层次的标记，没啥用．
+这样我们就建立了一个CVS仓库了，然后，我们可以把这个测试项目的文件删除．试验一下如何 
+从仓库获取文件．这里我假设上面的所有客户端工作你都已经做过了． 
+运行下面的命令： 
+   $cvs checkout cvstest
+从仓库中检索出cvstest项目的源文件． 
+如果你已经做过一次checkout了，那么不需要重新checkout，只需要进入cvstest项目的目录，更新 
+一把就行了： 
+$cd cvstest 
+$cvs update
+一下即可．又或者你不想直接更新，只是想看看有没有更新的东西，那么： 
+$cvs status
+这时后会打印出一长串状态报告（你可能需要用类似less这样的命令分页显示，或者定向到一个输出文件里慢慢看．），对项目中的每个文件有一份状态报告，类似这样： 
+=================================================================== 
+File: foo.c             Status: Up-to-date 
+   Working revision:    1.1.1.1 'Some Date' 
+   Repository revision: 1.2     /home/cvsroot/cvstest/foo.c,v 
+   Sticky Tag:          (none) 
+   Sticky Date:         (none) 
+   Sticky Options:      (none) 
+这里最重要的就是 Status 栏，这里总共可能有四种状态： 
+Up-to-date：表明你要到的文件是最新的． 
+Locally Modified：表明你曾经修改过该文件，但还没有提交，你的版本比仓库里的新． 
+Needing Patch：表明有个哥们已经修改过该文件并且已经提交了！你的版本比仓库里的旧． 
+Needs Merge：表明你曾经修改过该文件，但是偏偏有个不识相的也修改了这个文件，而且 
+还提交给仓库了！ 
+如果你只是想保持软件的同步的话（象我），那么上面的东西就足够用了．可是如果多人协作开发项目的话，可就不是了这么简单了．当你参加项目，维护文件时，就需要更多命令，比如说你我都是某 nasdaq 项目的开发人员： 
+1，你对某个文件做了修改，比如说改了ceo.c，加了一行程序：printf("where can I find VC to cheat!"); 
+改完之后你要把修改提交给仓库，用命令： 
+$cvs commit -m "add a complain" ceo.c 
+或者就是： 
+$cvs commit -m "worry about money" 
+让cvs帮你检查哪个文件需要提交． 
+2，当我开始干活的时候，可能我先： 
+$cvs status 
+一把，这时候我会看到： 
+================================================================== 
+File: ceo.c             Status: Needing Patch 
+   Working revision:    1.1.1.1 'Some Date' 
+   Repository revision: 1.2     /home/cvsroot/nastaq/ceo.c,v 
+   Sticky Tag:          (none) 
+   Sticky Date:         (none) 
+   Sticky Options:      (none) 
+于是我知道有人改了ceo.c，于是我就： 
+$cvs update ceo.c 
+或者干脆： 
+$cvs update 
+把ceo.c这个文件更新为最新版本，然后再干活．然后提交． 
+如果这天你修改了coo.c，加了一行 puts("how about another kind of bragging?"); 
+并且提交了，但是这时候我已经 $cvs status 过了，就是说我不知道你的修改． 
+而我加了一行printf("You must shamelessly and seems knowingness to act as a coo"); 
+并且傻乎乎地提交： 
+$cvs commit coo.c 
+这时候，CVS会告诉我 
+cvs commit: Examing . 
+cvs server: Up-to-date check failed for 'coo.c' 
+cvs [server aborted]: correct above error first! 
+于是我知道有个狗屎在我修改文件的当口做了提交，于是我 
+$cvs update 
+这时cvs会报告： 
+RCS file: /home/cvsroot/nasdaq/coo.c,v 
+retrieving revision 1.1.1.1 
+retrieving revision 1.2 
+Merging differences between 1.1.1.1 and 1.2 into coo.c 
+rcsmerge: warning: conflicts during merge 
+cvs update: conflicts found in coo.c 
+C coo.c 
+告诉你coo.c有版本冲突，于是我编辑coo.c，这时一般文件里看起来象这样： 
+  ... 
+printf("You must shamelessly and seems knowingness to act as a coo"); 
+<<<<<<< foo.c 
+======= 
+... 
+  puts("how about another kind of bragging?"); 
+>>>>>>> 1.2 
+... 
+于是我把上面改成： 
+printf("You must shamelessly and seems knowingness to act as a coo"); 
+puts("how about another kind of bragging?"); 
+然后 
+$cvs commit -m "merged" coo.c 
+于是下回你再更新的时候就有新的补钉要打．．．如此往复，直到完成所有修改． 
+不过这里有一些要注意的地方就是删除程序，如果你删掉一行对你可能没有用的程序 
+puts("to be honest"); 而我不想删除（因为我有用），而我不知情地直接： 
+$cvs update 
+了，那么我的这行程序也完蛋了，所以这里我们要注意所有开发人员的协调，千万不要 
+乱删东西，大不了用 
+#if    0 
+#endif 
+宏定义对括起来．实在要删东西，那最好先标记一个版本： 
+$cvs tag v_0_0_1 
+然后你可以发布并删除你自己的工作目录里这个版本的文件（注意：不是删除仓库里的．）： 
+$cvs release -d nasdaq 
+然后你再生成一个新分支： 
+$cvs rtag -b -r v_0_0_1 v_0_0_1_1 nasdaq 
+然后再建立v_0_0_1_1的分支 
+$cvs checkout -r v_0_0_1_1 nasdaq 
+编辑并修改这个分支的文件，这样的做法比较好． 
+不过要注意的是，新标记和新分支的建立最好由项目的管理人员负责，否则每个人都做一个分支，那么仓库就太乱了．因此，比较的开发人员之间的直接沟通是不能忽略的．一般 
+来说，在互联网上的标准模式是有一个管理员（可能自己并不写程序），有一个邮递列表，大家都在邮递列表上交流看法和做各种决议．当形成决议之后，管理员做一个新版本的标记．以此循环． 
+  
+还有一些命令，比如要增加一个文件 garbage_china_concept_stocks_list： 
+$cvs add garbage_china_concept_stocks_list 
+然后还要： 
+$cvs commit  garbage_china_concert_stocks_list 
+看起来有点象数据库里的事务？的确是这样．CVS维护着一个本地的参考文件（在CVS/Entries里）， 
+这样提交的时候就可以一次地把所有改变放到服务器端，这样也更安全． 
+同样，如果想删除文件 bankrupted_web_site： 
+$rm bankrupted_web_site 
+$cvs remove bankrupted_web_site 
+$cvs commit bankrupted_web_site 
+3，一些小技巧： 
+$Header$ 标记：把这个标记放在文件的任何地方都会被 cvs 替换成最后修改的 cvs 用户名， 
+该文件当前版本号，最后修改时间，该文件的 cvs 仓库路径，看起来象下面这个样子： 
+// $Header: /home/cvsroot/simhost/simhost.cpp,v 1.2 2001/04/20 08:26:10 jqliu Exp $ 
+一般我们把它放在开头，这样对程序员修改文件非常便利，很多时候你只要看一眼开头就知道文件是否最新． 
+$Id$标记：把这个标记放在文件的任何地方都会被 cvs 替换成最后修改的 cvs 用户名，该文件当前版本号，最后修改时间，该文件的 cvs 仓库路径，看起来象下面这个样子： 
+$Id: simhost.cpp,v 1.3 2001/04/24 02:27:36 simhost Exp $ 
+好了，上面所有的东西，估计就是我们用cvs时80%情况下用的命令和内容，包括文件的更新，提交，冲突的解决，分支的派生，增删文件等．实际上cvs的功能之强大，远远超出我在这里描述的内容，我这个＂速成＂也就管不了太多了，希望随着时间的推移，我们能够更加有效地使用CVS．也希望大家能够不断补充这篇文章，最后能够成为手册，而不仅仅是速成．当然，还要更多地参考别的文档． 
+

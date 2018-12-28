@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	 <constant name="struts.devMode" value="true" />
+	<constant name="struts.i18n.encodeing" value="utf-8" />
+
+	<package name="default" extends="struts-default" namespace="/">
+
+		<!-- 用户拦截器定义在该元素下 -->
+		<interceptors>
+			<!-- 定义了一个名为checkUserLogin的拦截器 -->
+			<interceptor name="checkUserLogin" class="cn.book.interceptor.AuthorityInterceptor" />
+
+			
+		</interceptors>
+
+
+		<global-results>
+			<result name="login" type="redirect">/admin/login.jsp</result>
+		</global-results>
+
+
+		<action name="admin" class="adminAction">
+			<interceptor-ref name="checkUserLogin"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="doresult">/admin/result.jsp</result>
+			<result name="success" type="redirect">/admin/index.jsp</result>
+			<result name="showall">/admin/adminlist.jsp</result>
+			<result name="update">/admin/update.jsp</result>
+			
+		</action>
+		
+		<action name="adminLogin" class="adminAction">
+		    <result name="success" type="redirect">/admin/index.jsp</result>
+		    <result name="login">/admin/login.jsp</result>
+		</action>
+		<action name="book" class="bookAction">
+		    <interceptor-ref name="fileUpload">
+				<param name="allowedTypes">
+					image/bmp,image/png,image/gif,image/pjpeg,img/jpg
+                </param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack" />
+		     <result name="search">/admin/book/searchBook.jsp</result>
+			<result name="success">/index.jsp</result>
+			<result name="show">/admin/book/bookList.jsp</result>
+			<result name="beforeshow">/book/showBookPage.jsp</result>
+			<result name="beforsearch">/book/searchResult.jsp</result>
+			<result name="mybook">/person/mybook.jsp</result>
+			<result name="mybook2">/person/bookindex.jsp</result>
+			<result name="doresult">/result.jsp</result>
+			<result name="input">/result.jsp</result>
+			<result name="showvip">/book/showVipBookList.jsp</result>
+			<result name="showpro">/book/showProBookList.jsp</result>
+		</action>
+
+		<action name="article" class="articleAction">
+		    
+			<result name="success">/article/articleList.jsp</result>
+			<result name="read">/article/read.jsp</result>
+			<result name="show">/admin/book/articleList.jsp</result>
+			<result name="doresult">/article/result.jsp</result>
+			<result name="before">/person/articleList.jsp</result>
+		</action>
+		
+		<action name="articleleft" class="articleAction">
+			<result name="success">/article/articleList.jsp</result>
+			<result name="read">/article/read.jsp</result>
+			<result name="show">/admin/book/articleList.jsp</result>
+			<result name="doresult">/article/result.jsp</result>
+			<result name="before">/person/articleList.jsp</result>
+		</action>
+
+		<action name="discuss" class="discussAction">
+			<result name="success">/admin/discuss/discussList.jsp</result>
+			<result name="doresult">/result.jsp</result>
+			<result name="one">/admin/discuss/readAndCross.jsp</result>
+			<result name="show">/article/discuss.jsp</result>
+		</action>
+		
+		<action name="progenitor2" class="progenitorAction">
+		    <result name="doresult">/result.jsp</result>
+		    <result name="center">/person/personCenter.jsp</result>
+		    <interceptor-ref name="fileUpload">
+				<param name="allowedTypes">
+					image/bmp,image/png,image/gif,image/pjpeg,img/jpg
+                 </param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack" />
+			<result name="success">/progenitor.jsp</result>
+		</action>
+
+		<action name="user" class="userAction">
+			<result name="success">/index.jsp</result>
+			<result name="input">/login.jsp</result>
+			<result name="ajaxlogin">/message.jsp</result>
+			<result name="doresult">/result.jsp</result>
+			<result name="show">/admin/user/userList.jsp</result>
+			<result name="one">/admin/user/update.jsp</result>
+		</action>
+
+		<action name="literature" class="literatureAction">
+			<result name="success">/index.jsp</result>
+		</action>
+		
+		<action name="bookmark" class="bookmarkAction">
+		   <result name="doresult">/article/result.jsp</result>
+		   <result name="show">/book/bookmark.jsp</result>
+		</action>
+		
+		
+            <!--		下载-->
+		 <action name="download" class="downAction">
+            <param name="downloadFile">/cross.zip</param>
+            <result name="success" type="stream">
+                
+                <param name="contentType">${mimeType}</param>
+                <param name="contentDisposition">
+                    attachment;filename="${filename}"
+                </param>
+            </result>
+        </action>
+
+
+	</package>
+
+</struts>    

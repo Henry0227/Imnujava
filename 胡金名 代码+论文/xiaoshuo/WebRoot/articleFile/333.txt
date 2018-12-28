@@ -1,0 +1,367 @@
+第一步：准备工作
+	MyEclipse 6.0------Tomcat6.0
+	所需jar文件:（所有jar文件已整理ssh_jars文件夹）注意：ssh_test项目中采用的是MySql 数据库。
+而本文档中配置的是Oracle数据库，注意其中配置的不同之处哦(在相应的地方有注明)
+ 
+第二步：(建立项目，包结构，导入所需jar文件)
+新建一个web project:
+     
+
+建立包结构如下：
+	 
+各包功能说明：
+	com.ssh.config : 配置文件（*.properties）,如数据库配置信息
+    com.ssh.resource :  资源文件 
+    com.ssh.util.comm :  公共工具(util)包
+    com.ssh.util.orm.hibernate :  hibernate DAO 模板
+    com.ssh.model : 各实体类文件
+	com.ssh.service : 业务逻辑包  相当于biz 
+ 	com.ssh..test : 测试包 
+	com.ssh.action : struts Action 
+      包结构可以根据自己需要自行划分
+ 	导入jar文件： 
+			新建一个User Library: sshJars
+		 
+	添加jar文件:
+          
+将新建的User Library: sshJars加入到项目中：
+ 
+第三步：撰写资源文件
+	jdbc.properties 
+	在jdbc.properties 里写上连接数据库的配置信息,此文件的配置信息用于在spring的配置文件中使用，数据库的配置信息也可以写到Spring 的配置文件中，这在一个jdbc.properties文件中是为了方便更改.
+	在com.ssh.resource包中新建下列文件：
+		 
+各文件详细内容及说明如下：
+-----------------------------------------------------------------------------------------------------------------------------------------
+applicationContext.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-lazy-init="true">
+	<description>Spring公共配置文件</description>
+	
+		<!-- 属性文件读入 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:com/ssh/config/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 数据源配置,主要用于开发测试环境 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- 数据源配置,在生产环境使用应用服务器的数据库连接池 -->
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/store" />-->
+
+	<!-- Hibernate配置 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean"><!—此处hibernate 的映射采用的是.xml 配置则应设置为：class=”org.springframework.orm.hibernate3.LocalSessionFactoryBean”-->
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">/ehcache-hibernate.xml</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses"> <!—此处hibernate 的映射采用的是.xml 配置同则应设置name=”mappingResource”-->
+			<list>
+				<value>com.ssh.model.User</value><!—此处hibernate 的映射采用的是.xml 配置同则应设置<value>具体配置文件名(*.hbm.xml)</value>-->
+			</list>
+		</property>
+	</bean>
+
+	<!-- 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!--
+		JTA环境的事务配置 <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager or
+		WebLogicJtaTransactionManager"/>
+	-->
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 保证POJO中标注@Required的属性被注入 -->
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+</beans>
+-----------------------------------------------------------------------------------------------------------------------------------------
+applicationContext-security.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd"
+	default-autowire="byType" default-lazy-init="true">
+</beans:beans>
+此文件用于AOP的安全验证,也可不添加
+-----------------------------------------------------------------------------------------------------------------------------------------
+applicationContext-service.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-autowire="byType" default-lazy-init="true">
+	<bean name="userService" class="com.ssh.service.UserService"></bean>
+	<bean name="/hello" class="com.ssh.action.HelloAction"></bean>
+</beans>
+Service（业务逻辑类）的注入
+-----------------------------------------------------------------------------------------------------------------------------------------
+ehcache-hibernate.xml:
+<ehcache>
+	<diskStore path="d:\cache" />
+	<!-- Object cache -->
+	<!-- 特别设定User类的Cache，内存中最多只保存5000个User实例，而且idle 600秒过期
+		 而Role类没有设置，则使用defaultCache中的默认设定 -->
+	<cache name="com.ssh.model.User" maxElementsInMemory="4" eternal="false" overflowToDisk="true" timeToIdleSeconds="600" />
+	<defaultCache maxElementsInMemory="100000" eternal="true" overflowToDisk="true" />
+</ehcache>
+Hibernate 缓存的配置（可以不做配置，如果需要才使用缓存才做配置，建议配置上）
+-----------------------------------------------------------------------------------------------------------------------------------------
+第四步：在com.ssh.util.comm 包下添加下列文件
+	 
+	此包为hibernate DAO模板中用到的各种工具类，各文件可以在打包的ssh_test项目中找到.
+第五步：添加hibernate DAO 模板
+ 
+此包为hibernate DAO模板，SimpleHibernateTemplate.java 中包含了对各实体（增，删，改，查，分页查等）的泛形方法。各文件可以在打包的ssh_test项目中找到.。
+
+第六步：以上的工作还不够，我们还需要进行WEB方面的配置
+	 
+配置web.xml , struts-config.xml , action-servlet.xml
+	各文件内容如下：
+-----------------------------------------------------------------------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<!-- Spring start-->
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:com/ssh/resource/applicationContext*.xml
+		</param-value>
+	</context-param>
+	<!-- Spring end -->
+
+	<!-- Struts Action Mapping-->
+	<servlet>
+		<servlet-name>action</servlet-name>
+		<servlet-class>
+			org.apache.struts.action.ActionServlet
+		</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>/WEB-INF/struts-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>action</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+	<!-- session超时定义,单位为分钟 -->
+	<session-config>
+		<session-timeout>20</session-timeout>
+	</session-config>
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>
+-----------------------------------------------------------------------------------------------------------------------------------------
+struts-config.xml: 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+<struts-config>
+	<!-- Form配置 -->
+	<form-beans>
+		<form-bean name="loginForm"
+			type="org.apache.struts.action.DynaActionForm">
+			<form-property name="username" type="java.lang.String"></form-property>
+		</form-bean>
+	</form-beans>
+	<action-mappings>
+		<!-- HELLO -->
+		<action path="/hello" type="com.ssh.action.LoginAction"
+			name="loginForm">
+			<forward name="ok" path="/ok.jsp"></forward>
+		</action>
+	</action-mappings>
+	<controller>
+		<set-property property="processorClass"
+			value="org.springframework.web.struts.DelegatingRequestProcessor" />
+	</controller>
+	<plug-in
+		className="org.springframework.web.struts.ContextLoaderPlugIn" />
+</struts-config>
+-----------------------------------------------------------------------------------------------------------------------------------------
+action-servlet.xml: 注意：此文件struts 1.x 必须配置，而struts 2.x 不需要配置
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+	default-autowire="byName" default-lazy-init="true">
+</beans>
+-----------------------------------------------------------------------------------------------------------------------------------------
+至此，我们的Spring+Struts+Hibernate集成工作完成！
+
+下面我们做测试：
+com.ssh.model  包下建立 User.java
+package com.ssh.model;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Entity;
+
+@Entity
+@Table(name = "user")
+public class User {
+	
+	private Integer id;
+	private String username;
+	private String password;
+	
+	
+	public User() {
+		super();
+	}
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+}
+
+com.ssh.service 包下建立 UserService.java
+
+package com.ssh.service;
+
+import java.util.List;
+
+import com.ssh.model.User;
+import com.ssh.util.orm.hibernate.Page;
+import com.ssh.util.orm.hibernate.SimpleHibernateTemplate;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+/*
+ *@author onlyflag
+ */
+@Transactional
+public class UserService {
+	private SimpleHibernateTemplate<User,Long> userDao;
+	@Required
+	public void setSessionFactory(SessionFactory sessionFactory)
+	{
+		userDao = new SimpleHibernateTemplate<User,Long>(sessionFactory,User.class);
+	}
+	@Transactional(readOnly=true)
+	public User getUser(Long id)
+	{
+		return userDao.get(id);
+	}
+	@Transactional(readOnly=true)
+	public Page<User> getAllUser(Page<User> page)
+	{
+		return userDao.findAll(page);
+	}
+	@Transactional(readOnly=true)
+	public User getUserByLoginName(String loginName)
+	{
+		return userDao.findUniqueByProperty("loginName",loginName);
+	}
+	
+	public void saveUser(User user)
+	{
+		userDao.save(user);
+	}
+	
+	public void deleteUser(Long id)
+	{
+		User user = userDao.get(id);
+		userDao.delete(user);
+	}
+	
+	public List<User> findByProperty(String propertyName,String value)
+	{
+		return userDao.findByProperty(propertyName, value);
+	}
+	public User findUniqueByProperty(String propertyName,String value)
+	{
+		return userDao.findUniqueByProperty(propertyName, value);
+	}
+	
+	@Transactional
+	public boolean isLoginNameUnique(String loginName,String orgLoginName)
+	{
+		return userDao.isUnique("loginName",loginName, orgLoginName);
+	}
+	public SimpleHibernateTemplate<User, Long> getUserDao() {
+		return userDao;
+	}
+}
+
+有了：User  和 UserService 我们就可写一个测试类来进行User 类的各种操作:
+	com.ssh.test  下建立 Test.java
+
+package com.ssh.test;
+
+import com.ssh.model.User;
+import com.ssh.service.UserService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Test {
+	public static void main(String[] args){
+		ApplicationContext ctx=new ClassPathXmlApplicationContext("com.ssh /resource/applicationContext*.xml");
+		UserService us=(UserService) ctx.getBean("userService");
+		User user=new User();
+		user.setPassword("123");
+		user.setUsername("onlyflag");
+		us.saveUser(user);
+	}
+}
+
+运行Test.java  我们将成功的在数据库里插入一条数据
+
+关于WEB里的应用例子， 请看ssh_jar 项目
+				                            

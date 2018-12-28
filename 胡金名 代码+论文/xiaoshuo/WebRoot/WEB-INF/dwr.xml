@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN"
+    "http://getahead.org/dwr/dwr20.dtd">
+
+<dwr>
+	<allow>
+		<create javascript="LoginService" creator="new">
+			<param name="class" value="cn.book.util.Login" />
+		</create>
+		<!-- 指明bean转换器 -->
+		<convert match="cn.book.model.Users" converter="bean" />
+
+		
+	</allow>
+</dwr>    

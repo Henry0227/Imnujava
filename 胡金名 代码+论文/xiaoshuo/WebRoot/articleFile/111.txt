@@ -1,0 +1,343 @@
+行政服务中心5.0设计
+tbl_bas_audititem 审批事项表列
+1.	审批事项ID   sID        varchar(20)              非空           主键
+说明：审批事项系统自动生成编码     
+2. 审批事项编码 sItemNo       varchar(20)            可空           
+3 审批事项名称 sItemName     varchar(400)           非空        
+说明：通过函数自动生成
+4.大项名称  sBigName       varchar(50)
+5.中项名称  sMidname       varchar(50)
+6.小项名称  sSmallname      varchar(50)
+7.细项名称  sDname         varchar(50)
+8. 事项属性 sItemProperty    varchar（1）       默认A         非空
+说明：A 特许类 B 许可类 C 普通许可类 D 核准类 E 登记类
+9. 事项办理类型 sItemType    varchar(1)        默认2          非空
+说明：1.即办件 2.普通承诺件 3.一般联办件 4.前置联办件 5.上报件
+
+10. 审批级别     sAuditClass   varchar(1)         默认3           非空
+说明：1.国家级  2.省级 3.地市级 4.县乡级 5.乡镇级
+
+11. 审批方式    sAuditType    varchar(1)             默认1          非空
+说明： 1.自审自核 2.一审一核 3.在线审批 4.系统自动决定（超时默认决定） 5.上报审批
+ 
+12. .对象与范围   sObjectTo       varchar(500)                    可空
+13. 政策依据     sPolicyBase     varchar(500)                    可空
+14. 申报条件     sApplyTerm      varchar(500)                   可空
+15. 数量限制     iMaxNum       int              默认1        非空（不可为0）
+16. 申请材料     sApplyStuff      varchar(500)                   可空
+17.办理时限      sTimeLimite      varchar(100)                  可空
+18.办事流程      sAuditFlow       varchar(500)                  可空
+19收费依据      sFeeBase        varchar(100)                   可空
+20.收费标准      sFeeStandard     varchar(500)                   可空
+21. 使用标志     sUseFlag        VarChar(1)['0']           0未启用  1已启用
+
+tbl_bas_winitems中心项目表
+1.sItemID                  VarChar(20)                    审批事项ID
+2 sItemNo               varchar(20)                     审批事项编码
+2. sItemName            VarChar(400)                   服务项目名称
+3. sAreaCode             varchar(20)                    行政区域编码 
+4. sWinNo               VarChar(10)                   窗口编号
+5. sDeptNo              VarChar(10)                   单位编号
+6. iAccTime                 int                       中心承诺期限
+7. sAccTimeUnit          varchar(1)                   时限单位：0 工作日 1 自然日
+8. sIsFee                varchar(1)          是否收费    默认 0           非空
+说明 ：0.不收费 1 收费
+9 sIsCard                varchar(1)         是否领证     默认 0           非空
+说明 ：0.不领证1 领证
+10. sChargeTime          VarChar(1)['0']       收费时机(0 受理后办理前 1 领证前)
+
+11. sApplyArea           varchar(3)         应用范围
+说明：使用三位表示，第一位表示是否系统使用[0 是 1 否] 第二位表示是否网上公示[0 是 1否] 第三位表示是否网上申报[0 是 1否] 
+12 sUseFlag             VarChar(1)['0'] 使用标志(0 使用 1 不用)
+
+13.环节流程图 sImgaddr        varchar(100)                   可空
+说明：未配置过环节的事项该列为空，配置过的，该列放置配置信息的XML文档地址
+
+
+
+tbl_bas_fee 收费项目费用信息
+1.收费项目ID   sFeeID        varchar(20)                    非空          主键 
+2.事项ID       sItemID          VarChar(20)                可空
+3.收费项目编码  sFeeNo       varchar(20)                    可空
+4.收费项目名称  sFeeName      varchar(20)                  非空
+
+4. 拼音码       sFeepym      varchar(20)                    非空
+5. 费用种类     sFeeType      varchar(1)                默认1       非空
+说明：1行政事业行收费  2.政府性基金 3.经营性服务收费 4.税收 5.专项收入 6.其他
+
+6. 缴费形式       sInFeeType       varchar(2)        默认21      非空
+说明：21 现场现金缴费 22 银行转账缴费  23 其他形式
+7. .缴费计算方式   sCountType       varchar（2）     默认31      非空
+说明：31 固定收费  32公式计算  33其他（交给窗口填写收费多少）
+8. 收费方式       sInKind         varchar(2)        默认 11      非空
+说明：11 窗口自行收费 12银行统一收费  13其他方式
+9. 固定收费金额   sFeeValue      decimal(18,2)     默认0.00 
+10. 计算相关项描述：sCountItem    varchar(50)      比如：建筑面积 
+11. 计算相关项单位：sCountUnit    varchar(20)       比如：平方米
+12. 计算相关项数量：sCountValue   varchar(50)      分段时以'#'进行分隔  比如 100#0  表示 0-100,100以上
+
+13. 计算标准值：   sCountStard     varchar(50) 分段时以'#'进行分隔 与计算相关项数量相对应。比如 2#1
+14. 是否与计算相关项有关: sIsHave  varchar(2)         0 无关[表示固定，与相关项无关] 1 有关[表示用输入相关项数量*标准值]
+15. 分段是否累加:   isAdd        varchar(2)       0 否 1 是
+16. 最低收费标准   minValue    decimal(18,2)     默认0.00   
+17最高收费标准    highValue    decimal(18,2)     默认0.00  
+18行政区域编码    sAreaCode   varchar(20)    
+19 顺序号          iOrder        int 
+20. 是否启用    sUseFlag        VarChar(1)['0']           0未启用  1已启用
+
+Tbl_bas_stuff  申请材料表
+1.事项ID         sID        varchar(20)                      非空      外键      
+说明：tbl_bas_audititem表中的sno取过来
+2.材料ID        sStuffed      varchar(20)                     非空      主键  
+3.材料编码         sStuffno      varchar(20)                   可空
+4. 材料类型       sStufftype      varchar(2)                   非空
+（1 证照类 2 表格类 3 批文类 4 减缓免抄告类 9 其它类
+5. 表单编号       sTableID      varchar(20)                   表单编号
+说明：只有材料类型时表格类才能出现数据
+5．材料名称       sStuffname     varchar(50)                  非空
+6.份数            sStuffnum         int            
+7.纸质/电子档      sFlag          varchar(2)                0 纸制 1电子档
+8. 原件/复印件     sKind          varchar(2)                0 原件 1复印件
+9. 申请材料表单下载路径 sStuffAddr  varchar(50)                 可空
+10申请材料范本下载路径 sStuffTemplate  varchar(50)
+11 顺序号         iOrder          int
+12 使用标志       sUseFlag        VarChar(1)['0']           0未启用  1已启用
+
+
+
+tbl_bas_itemnode 处理环节设置表
+1.事项ID          sID        varchar(20)                   非空         
+2.环节节点编号    sNodeId         varchar(20)                   非空         主键
+
+3.环节名称        sNodeName       varchar(20)                  非空
+
+4.环节类型        sNodeType        varchar(2)                   非空
+说明：参考处理环节描述规范
+
+5．前环节         sFroNode        varchar(20)                   非空
+说明: 开始环节为0000  其他未前节点编号
+
+6. 后环节         sNextNode        varchar(20)                   非空
+说明：结束环节为9999  其他为后环节编号
+
+7. 环节承诺时限   iAccepTime         int             默认0      非空
+
+8.是否加入总时限  sAllFlag            varchar(2)       默认0      非空
+说明 0不加入总时限，1加入总时限
+
+9 是否可回退前面节点：sIsBack     varchar(1)[‘0’]             0:不回退 1回退  
+
+Tbl_bas_ nodeperson   环节人员配置表
+1.事项ID   sID        varchar(20)           非空         
+2.节点编号 sNodeId         varchar(20)                   非空         主键
+
+3.人员编号 sPersonNo       varchar(20)                   非空         主键
+
+4.审批顺序 iOrder          int                          非空         主键
+
+5.审批类型 sType          varchar(1)                    非空          
+说明 ：1串联 2并联
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+Tbl_bas_nodeflow   环节流程表
+1.办件编码 iglidenum       varchar(30)                   非空         主键
+
+2. 节点编号 nodeid         varchar(20)                   非空         主键
+
+3.开始时间 sbegin          datetime                     可空 
+
+4.结束时间 send            datetime                     可空
+
+5. 审批状态 state           varchar(1)                    非空 
+说明：0未进行 1正在进行 2已完成
+
+6.结果     sresult          varchar(10)                   可空
+说明：填写操作后办件状态改变的标识符
+7. 委托标志位   isdelegation            varchar(1)         非空
+说明：0未进行委托 1进行委托中 2委托已结束
+
+8．补交标志位   issupple               varchar(1)          非空
+说明：0不需要补交 1正在补交   2 补交完成
+9．是否需要联办 ishelp              varchar(2)             非空
+说明：0 不需要联办 1 需要联办 默认0
+10联办事项编号     sno            varchar（20）
+11.联办项目编号： helpglidenum   varchar(30)                可空
+说明：需要发起联办时填写，不需要时为空 
+12.联办办理标志：helpflag       varchar(2)                  可空
+说明：联办项目标志0 不需要联办 1 需要联办未申请联办 2 联办正在进行中 3联办项目已审批完成
+
+13.联办类型：helpkind          varchar(2)                   可空
+说明：0.一般联办件 1.前置联办件  
+  
+
+Tbl_bas_ personflow  环节人员流程表
+1.节点编号 nodeid         varchar(20)                   非空         主键
+
+2.人员编号 personno       varchar(20)                   非空         主键
+
+3.审批顺序 iorder          int                          非空         主键
+
+4.审批类型 stype          varchar(1)                    非空          
+说明 ：1串联 2并联
+4.审批状态 state           varchar(1)                    非空 
+说明：0未进行 1正在进行 2已完成
+5.办件编码 iglidenum       varchar(30)                   非空         主键
+
+6.开始时间 sbegin          datetime                     可空 
+
+7.结束时间 send            datetime                     可空
+
+8.结果     sresult          varchar(10)                   可空
+说明：填写操作后办件状态改变的标识符
+9.办理意见 memo          varchar（500）               可空
+说明：
+
+
+Tbl_shl_apply 办件信息登记表
+1.办件登记编号   iglidenum            varchar(30)               非空     主键
+说明：按照要求自动生成
+2.申请人姓名     sCustName           VarChar(100)             非空
+
+3. 项目编号      sItemNo              VarChar(10)   
+
+4. 申请人电话    sCustTel             VarChar(20)    
+
+5. 申请人手机sCustMobil              VarChar(20)    
+
+6. 申请人电子邮箱sCustEmail          VarChar(60)    
+
+7. 申请人住址sCustAdd               VarChar(200)   
+
+8申请人单位sCustDept                VarChar(200)   
+
+9．申请人身份证sIdCard              VarChar(19)   
+
+10．登记方式sRegkind                VarChar(1)['0'] 
+
+11. 反馈方式sFeedKind               VarChar(2)['00'] 
+
+12. 创建日期Create_Date             Date[getdate()]
+
+13. 创建人Create_By                VarChar(30)    
+
+14. 行政区域代码sArea_Code         VarChar(10)    
+
+15. 办件数量  iAmount              Int    
+
+
+Tbl_shl_accept 办件受理表
+1.办件登记编号   iglidenum            varchar(30)               非空     主键
+
+2. 项目编号      sItemNo             VarChar(10)               非空
+
+3. 受理时间      dAccDate            Date[getdate()]             可空
+
+4. 承诺时限      iAcceptTime          Int                       非空
+
+5. 应办结日期    dSFinishDate          Date                     可空
+
+6. 实际办结日期  dAFinishDate          Date                    可空
+
+7. 承诺时限计算标志   timeflag         varchar(2)       默认0    非空 
+说明：0.未开始计算 1正常计算 2.暂停计算
+
+8. 暂停时剩余时限天数 leftday           int            默认0     非空
+
+9. 暂停天数         stopday             int            默认0     非空
+
+10. 领证日期    dCard_Date             Date                     可空
+
+11. 办件状态      saccflag              varchar(10)                非空
+
+12. 收费状态     sfeeflag               varchar(10)                非空
+
+13. 发证标志位     cardflag             varchar(1)                 非空
+说明： 0不需要发证 1。未发证 2.已发证
+ 
+
+Tbl_shl_ delegation 委托表
+1．办件登记编号   iglidenum            varchar(30)               非空     主键
+
+2．委托类型       delegatetype          varchar（2）             非空
+说明 1 收件委托   2踏勘委托  3发证委托
+
+3. 委托对象       delegateto             varchar(50)               非空
+说明：可填写系统内的行政服务中心，也可填写系统外的
+
+3.委托开始时间   delegatebegin           date                     非空
+
+4.委托结束时间   delegateend             date                     可空
+
+5.委托状态       state                  varchar(1)                 非空
+说明：1委托中 2委托完结   
+
+6委托结果       sresult                 varchar(1)                非空
+说明：0：无结果 1 正常（继续下面流程） 2不正常（终止）
+
+7.委托说明       memo                varchar(1000)               可空
+
+
+Tbl_shl_ supplement 补交信息表
+1．办件登记编号   iglidenum       varchar(30)               非空     主键
+
+2. 节点编号        nodeid         varchar(20)               非空      主键
+
+3. 补交信息       supple           varchar(1000)             非空
+
+4. 补交开始时间   supplebegin      date                      非空
+
+5. 补交到期时间   maxend          date                      非空
+
+6. 材料补齐时间   suppleend        date                      可空      
+
+7．补交标志      suppleflag         varchar(1)                非空
+说明 1正在进行中 2补交完成
+
+
+
+Tbl_shl_liaison 联办件项目表
+1.联办主项目编号  iglidenum       varchar(30)               非空         主键
+
+2．协办事项编号  helpitemno       varchar(20)               非空         主键
+
+3.协办办件编号   helpiglidenum     varchar(20)               可空         主键
+
+4.协办发起节点   helpnode         varchar(20)                非空      
+
+5.协办办件状态   helpflag          varchar(20)               非空
+
+6.协办办件收费状态 helpsfeeflag     varchar(10)               非空
+
+7 协办领证状态   helpcarflag       varchar(10)                非空
+
+8 协办办结日期   dAFinishDate     datetime                  可空
+
+
+
+
+
+
+ 
+
+tbl_sys_dinctype 字典项目类型表
+---------------------------------------------------------------------------------------------
+typeid       varchar(20)        类型编号          主键   非空  
+typename     varchar(50)        类型名称
+typememo     varchar(500)       类型说明
+---------------------------------------------------------------------------------------------
+
+tbl_sys_dincdata 数据字典表
+---------------------------------------------------------------------------------------------
+dino        varchar(20)        字典编号          主键   非空  系统自定义
+dtype       varchar(20)        字典项目类型             非空  外键 
+pino        varchar（20）      字典父编号        
+dname       varchar(50)        字典项目名称
+dmemo       varchar(500)       字典项目说明
+--------------------------------------------------------------------------------------------

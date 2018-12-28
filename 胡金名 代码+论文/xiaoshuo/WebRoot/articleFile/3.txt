@@ -1,0 +1,1344 @@
+JSP权威指南教程
+第一章 概述
+javascript是一种基于对象和事件驱动并具有安全性能的脚本语言。使用它的目的是和HTML以及动态的JAVA脚本语言即JAVA小程序一起实现在一个WEB页面中链接多个对象，与WEB客户交互。他是通过嵌入或者调入标准的HTML语言中实现的。它有以下几个基本的特点：
+1、是一种脚本语言
+它采用小程序段的方式实现编程，是一种解释型语言，它不需要编译，而是在运行过程中被逐行地解释执行。
+2、基于对象的语言
+javascript是一种基于对象的语言，也可以看作是面向对象，这意味着，它可以运用自己已经创建的对象，因此许多功能来自于脚本环境中对象的方法与脚本的相互作用。
+3、简单性
+javascript的简单性主要体现在以下：
+I. 他是一种基于JAVA基本语句和控制流之上的一种简单而紧凑的设计。
+II.变量类型采用的是弱类型，没有严格的数据类型。
+4、安全性
+他不允许访问本地硬盘，不能将数据存入到服务器，不允许对网络文档进行修改和删除，只能通过浏览器实现信息的浏览或动态交互。可以有效的防止数据丢失。
+5、动态性
+它可以直接对用户输入进行响应，无须通过WEB服务程序。它对用户的响应是通过事件驱动的，事件(Event)即用户在网页上执行某种操作产生的动作，如按下鼠标，移动窗口，选择菜单等。
+6、跨平台性
+javascript依赖浏览器来运行，所以和操作系统无关，只要能运行浏览器，且浏览器支持javascript就可以运行。
+
+综上所述，javascript是一种新的描述语言，可以被嵌入HTML文件中。可以响应用户的操作，而不必通过网络来回的传输资料，对用户输入的资料可以不需要传回服务器处理，再传回客户端的过程，能够直接在客户端使用javascript应用程序处理。
+
+第二章 词法结构
+2.1 字符集：unicode(16位，支持国际化)；
+2.2 大小写敏感性：严格区分大小写；
+HTML是不区分大小写的。注意和客户端的Javascript的区分；
+2.3 空白符和换行符 ：
+Javascript会忽略记号中空格，制表符和换行符，除非他们是字符串或正则表达式直接量的一部分；记号token就是一个关键字，变量名，数字，函数名或者其它实体，如果在一个记号中插入了空格、制表符或换行符，就分为了2个记号（语法错误）；
+可以缩进代码，便于阅读；
+2.4 可选的分号：
+Javascript 的简单语句后通常都有分号；这里漏掉分号可能会引起错误；
+举例：return true;可能变成 return ; true; 因为Javascript 通常自动插入分号。
+2.5 注释：Javascript支持C和C++的注释
+示例：// 单行注释
+   /* 这也是注释 */
+   /*
+* 多行注释
+* 也是注释
+*/
+2.6 直接量（literal）
+就是程序中直接显示出来的数据值；例如数字，字符串，布尔值等；
+Javascript 1.2起支持数组直接量和对象直接量；
+2.7 标记符（Identifier）
+   其实一个名字，用来命名变量和函数，或者用作Javascript中某些循环的标签；
+     标记符的命名规则：（同其他语言相同）
+     第一个字母必须是字母、下划线或者美元符号(1.1以后才支持，所以少用)；接下来可以是字母、数字、下划线、美元符号；
+   但是标记符不能和Javascript中用于其他目的的关键词同名；
+提到允许标识符中有Unicode转义序列？，\u后接4个十六进制的数字，用来指定一个16位的字符编码，例如π也可以写作\u03c0，即使不支持Unicode字符集的文本编辑器和其他工具也可以执行。
+2.8 保留字
+保留字不可用作标识符（变量名、函数名以及循环标签）
+此外，你应避免把Javascript预定义的全局变量名，或者全局函数名用作标记符（table 2-3）；
+如果把这些名字创建变量或函数，就会得到一个错误（如果该属性是只读的）或者重定义一个已经存在的变量或函数，除非你非常明白自己做什么；
+Table 2-1. Reserved JavaScript keywords
+break	do	if	switch	typeof
+case	else	in	this	var
+catch	false	instanceof	tHRow	void
+continue	finally	new	true	while
+default	for	null	try	with
+delete	function	return		
+
+Table 2-2. Words reserved for ECMA extensions
+abstract	double	goto	native	static
+boolean	enum	implements	package	super
+byte	export	import	private	synchronized
+char	extends	int	protected	throws
+class	final	interface	public	TRansient
+const	float	long	short	volatile
+debugger				
+
+Table 2-3. Other identifiers to avoid
+arguments	encodeURI	Infinity	Object	String
+Array	Error	isFinite	parseFloat	SyntaxError
+Boolean	escape	isNaN	parseInt	TypeError
+Date	eval	Math	RangeError	undefined
+decodeURI	EvalError	NaN	ReferenceError	unescape
+decodeURIComponent	Function	Number	RegExp	URIError
+
+第三章 数据类型和值
+Javascript允许使用三种基本的数据类型——数字，文本字符串和布尔值；
+还支持两种小数据类型——null(空)和undefined(未定义)【也属于基本的数据类型】；
+  Javascript还支持复合数据类型——对象。对象是值（可以是基本值，也可以是复合值）的集合；Javascript中对象有两种，一种对象是已命名的值的无序集合，另一种是有编号的值的有序集合；后者被称为数组（array）；
+  Javascript还定义了另一特殊对象--函数（function）, Javascript为函数定义了专门的语法，因此，把函数独立于对象和数组的数据类型；
+  Javascript语言的核心还定义了其他一些专用的对象。这些对象表示的不是新的数据类型，而是新的对象类（class）。Date类是表示日期的对象，RegExp类是表示正则表达式的对象，Error类是表示的是Javascript程序发生的语法和运行时错误的对象。
+3.1 数字（number）
+在Javascript中，所有的数字都是浮点型数值，并不区别整数型数值和浮点型数值。
+当一个数字出现在Javascript程序中时，我们称它数值直接量（numeric literal）,下面分别介绍：
+
+3.11整型直接量
+在Javascript程序中，十进制的整数是一个数字序列。
+Javascript的数字格式允许精确表示（-2/53即负2的53次方）和2/53（2的53次方）之间的所有整数。但是注意，Javascript某些整数的运算（例如位运算）是对32的整数执行的，他们的范围是从（-2/31）到（2/31-1）。
+
+3.12八进制和十六进制的直接量
+十六进制：以”0x”开头，其后跟随十六进制的直接量；（0-9，a-f）;
+八进制 ： 以“0”开头。(0-7),有的Javascript不支持八进制，所以最好不要用以0开头的整型直接量。
+3.13 浮点型直接量
+浮点型直接量可以有小数点。
+还可以使用指数记数法表示浮点型直接量，简单举例：12345=1.2345e4
+注意：虽然实数有无穷多个，但是JavaScript的浮点格式能够精确表示出来的却是有限的（18437736874454810627个），这意味着当你在JavaScript中使用实数时，表示出的数字通常是真实数字的近似值。但也够用了。
+3.14数字的使用
+Javascript是使用语言自身提供的算术运算符来进行运算的。这些运算符包括（+，-，*，/）。
+此外，Javascript还采用了大量的算术函数，这些函数被保存为Math对象的属性。
+例如：Math.sin(x);
+还有一种方法toString()可以用他的参数指定的基数或底数（底数必须在2和36之间）把数字转换成字符串，例如把一个数字转换成二进制数字，可用：
+Var x = 3;
+Var y = x..toString(2); //y是”11”
+要调用一个数字的直接量的toString()方法，就必须使用括号，以免把“.”解释为小数点。
+Var y = (23).toString(2); 
+3.15特殊的数值
+Javascript还使用了一些特殊的数值，当一个浮点值大于所能表示的最大值时，输出Infinity,同样，负无穷大就输出 –Infinity.
+另一个特殊数值就是当一个算术运算（如用0除以0）产生了未定义的结果或者错误时返回的。此时，结果是一个非数字的特殊值，输出为NaN (Not a Number)。相关的函数isFinite()来检测一个数字是否是NaN,正无穷大或负无穷大。
+Javascript为每个特殊的数值都定义了常量，下面列出。
+   
+常量	含义
+Infinity	无限大的数值
+NaN	特殊的非数字值
+Number.MAX_VALUE	可表示的最大值
+Number.MIN_VALUE	可表示的最小数字（与零最接近的数字）
+Number.NaN	特殊的非数字值
+Number.POSITIVE_INFINITY	表示正无穷大的特殊值
+Number.NEGATIVE_INFINITY	表示负无穷大的特殊值
+
+3.2 字符串（String）
+字符串是由Unicode字符，数字，标点符号等组成的序列，注意，与 C,C++,Java 不同的是它没有char这样的字符数据类型，要表示单个字符，必须使用长度为1的字符串。
+3.2.1字符串直接量
+字符串就是由单引号或双引号（’或”）括起来的Unicode字符序列。
+字符串直接量必须写在一行里，如果将它们写在两行里，可能回将他们截断。如果必须在字符串直接量里面添加一个换行符，可以使用字符序列\n，以后具体介绍转义字符；
+   在客户端的Javascript程序中，HTML也使用单引号和双引号来界定字符串，因此Javascript与HTML同时使用时，最好对Javascript采用一种引用方式，HTML采用另一种引用方式。
+3.2.2字符串直接量中的转义字符
+   反斜线（\）符号后加一个字符就可以表示在字符串中无法出现的字符。
+序列	所代表的字符
+\0	NUL字符（\u0000）
+\b	退格符（\u0008）
+\t	水平制表 符（\u0009）
+\n	换行 符（\u000A）
+\v	垂直制表符（\u000B）
+\f	换页符(\u000C)
+\r	回车符(\u000D)
+\”	双引号(\u0022)
+\’	撇号或单引号(\u0027)
+\\	反斜线符（\005C）
+3.2.3字符串的使用
+1．能够连接字符串，例如：
+Msg = ‘hello‘ + ‘world’; //生成字符串‘hello world’;
+2.如果要确定字符串的长度，可以使用字符串的length属性。
+其他方法：charAt,substring,indexof.
+3.3 布尔值（Boolean Values）
+两个值“true”、”false”。布尔值表示某个事物的真假。
+布尔值通常用于Javascript的控制结构，例如：
+If(a==4)
+ b = b+1;
+else
+ a = a+1;
+3.4 函数（function）
+是一个可执行的Javascript代码段，由Javascript定义或者由Javascript实现预定义。虽然函数只能被定义一次，但是可以Javascript可以多次调用或执行它。Javascript函数可以带有实际参数或者形式参数，而且它能返回一个值，以表示计算结果。
+Javascript中函数是一个真正的数据类型，这就意味着函数可以被储存在变量，数组和对象中。而且函数还可以作为参数传递给其他函数。
+3.4.1函数直接量
+函数直接量是用关键字function后面加可选的函数名，用括号括起来的参数列表和用花括号括起来的函数体定义的。所以，函数直接量看起来就像一个函数定义，不过没有函数名。他们之间的最大的区别就是：函数直接量可以出现在其他Javascript表达式中。
+举例：
+用函数定义来定义函数square：Function square(x) { return x*x;}
+用函数直接量来定义它：var square = function(x) {return x*x;}
+为了遵从LISP程序设计语言，这种定义函数的方式有时被称为拉姆达（lambda）函数.
+3.5 对象（Object）
+对象是已命名的数据的集合。这些已命名的数据通常被用作对象的属性来引用。
+对象的属性可以是任何类型的数据，包括数组，函数以及其他对象。
+例如：Document.myform.button。这里引用一个对象的button属性，而这个对象本身又存在对象document的myform属性中。
+如果一个函数是存在某个对象的属性中，那个函数通常叫做方法，属性名也变成了方法名。
+例如：document.write (‘test’);
+Javascript中的对象可以作为关联数组使用，因此他们能讲任意的数据值和字符串关联起来。如果采用这种方式使用对象，那么访问对象的属性就要不同，即使用一个用方括号括起来的包含所需属性名的字符串。例如：Image[“ width”]
+3.5.1创建对象
+对象是通过调用特殊的构造函数（constructor function）创建的，例如：Var now = new Date();
+一旦创建了对象，就可以使用它的属性了。
+例如：
+Var point = new Object();
+point.x = 2;
+point.y = 1;
+
+3.5.2对象直接量
+对象直接量是由一个列表构成，这个列表的元素是用冒号分隔的属性/值对，元素之间用逗号隔开了，整个列表包含在花括号中。例如：Var point = {x:2,y:1 };
+对象直接量也可以嵌套,而且对象直接量中的属性值不必是常量，它可以是任意的Javascript表达式。
+例如：
+Var triangle = {
+              Left:{x:point.x,y:point.y},
+              Right:{x:2,y;2}
+             };
+3.6 数组（array）
+数组和对象一样是数值的集合，不同的是对象中每个数值都有一个名字，而数组中每个数值都有一个下标。常见的使用方式：数组a,非负整数i,a[i]就是一个数组元素。记住：数组下标是从0开始的。那么a[2]就是引用数组a的第三个元素。
+数组可以存放任何一种Javascript的数据类型，包括对其他数组，对象或者函数的引用。
+例如：document.images[1].width;
+注意：这里描述的常规数组和关联数组不同。常规数组以非负整数作为下标，而关联数组以字符串作为下标。
+3.6.1数组的创建
+可以使用构造函数Array（）来创建数组，：var a = new array();
+如果只给Array()构造函数传递一个参数，那么该参数指定的是数组的长度。例如：Var a= new Array(10);//创建的是十个未定义元素的新数组。
+3.6.2数组直接量
+数组直接量（数组初始化程序）是一个封闭在一个方括号中的序列，序列中元素由逗号分开。例如： var a = [ 1.2,”test”,true];
+3.7 null
+表示无值。
+3.8 undefined
+当使用一个未声明的变量时，或者使用一个已声明但还没有赋值的变量时，就返回这个值。举例：my.prop ==null
+如果属性prop不存在，或者它存在但值是null,那么这个表达式就是true.
+3.9 Date对象
+Javascript提供的一种日期和时间的对象类。要使用Date对象，必须先生成一个Date实例: 变量名=new Date(); 
+方法：
+getDay(),getDate(),getHours(),getMinutes(),getMonth(),getSeconds(),getTime(), 
+getTimeZoneOffset(),getYear() 
+还有setDay... ... 
+toGMTString() 用GMT格式返回当前时间. (Sun,12 Feb 1999 14:19:22 GMT) 
+toLocaleString 用locale格式返回当前时间. (03/11/99 14:19:22) 
+parse(date) 将普通date字符串转换成豪秒形式,从而给setTime()做参数.
+3.10 正则表达式（暂不看）；
+3.11 JavaScript的Error对象
+javascript中，可以通过(Window).Error对象来访问Error的定义。
+1.Error对象
+ Error对象包含四个属性:
+ (1)name: 一般为"Error";
+ (2)number: 代码,如果创建时不指定,则没有该属性.
+ (3)description: 描述
+ (4)message: 一般与description相同
+2.创建Error对象
+ (1)new Error(number, description);
+  创建指定number和description(message)属性的Error对象;
+ (2)new Error(description);
+  相当于new Error(0, description);
+ (3)new Error();
+  相当于new Error(0, "");
+3.throw 语句
+ 可以在函数中用throw语句抛出一个错误.如:
+ function test(){
+  throw new Error(-100, "A test Error");
+ }
+4.try/catch语句
+try/catch语句用于在脚本中捕获异常,如:
+  try {
+   test();
+  } catch(ex) {
+   alert(ex. message);
+  }
+3.12基本数据类型的包装对象
+Javascript不仅支持三种基本数据类型，还支持他们的对应的对象类（Number,String,Boolean）；这些包装类不仅具有和基本数据类型一样的值。还定义了用来运算数据的属性和方法。
+Javascript可以很灵活的将一种类型的值转换为另一种类型。
+
+第四章 变量
+变量（variable）是和数值相关。举例：
+i =2;
+var sum= i+2;
+4.1 变量的类型
+Javascript是无类型（untype）的。这与C、JAVA是不同的。这意味着Javascript变量可以存放任何类型的值。例如：i=10; i=”ten”;
+另外，在必要时Javascript可以快速，自动将一种类型转换成另一种类型。例如：把一个数值连接到一个字符串上，那么Javascript会自动把这个数值转换成相应的字符串。
+4.2 变量的声明
+在使用变量前，必须先声明（declare）。变量是用关键字var声明的。例如：var i ;var message = “hello”;
+如果没有用var语句给变量一个初始值，那么它的初始值是undefined.
+var 语句还可以用作for循环的一部分，例如：for(var i=0;i<10;i++) document. write(I,’<br>’);
+由于var声明的变量是永久的。也就是说用delete运算符来删除这些运算将会引发错误。
+4.2.1重复的声明和遗漏的声明 
+使用var语句多次声明同一个变量是合法的。不会产生错误。
+如果尝试读一个未声明变量的值，Javascript会产生一个错误。如果尝试给一个未用var声明的变量赋值，Javascript会隐式声明该变量（全局变量）。
+4.3 变量的作用域（scope）
+变量的作用域是程序中定义这个变量的区域。分为全局（global）变量，局部(local)变量。
+在函数体内部，局部变量的优先级比同名的全局变量高。
+声明局部变量时，一定要使用var语句。
+与此相关的例子：
+  首先考察两段代码：
+代码1:
+<script language="javascript" type="text/javascript"> 
+<!-- 
+var myVar = "Hi!"; 
+function tit() { 
+    alert(myVar); 
+    myVar = "Hello World!"; 
+    alert(myVar); 
+} 
+window.tit(); 
+--> 
+</script>  
+代码2:
+<script language="javascript" type="text/javascript"> 
+<!-- 
+var myVar = "Hi!"; 
+function tit() { 
+    alert(myVar); 
+    var myVar = "Hello World!"; 
+    alert(myVar); 
+} 
+window.tit(); 
+--> 
+</script> 
+第一段代码运行后（全局变量 myVar 的值就改变了），显示的结果分别是“Hi!”和“Hello World!”，而第二段代码运行后的结果分别是“undefined”和“Hello World!”。
+第一段代码很容易理解，在代码开头，我们定义了全局变量 myVar，并且赋值“Hi!”，在函数 tit() 中，首先显示了该全局变量的内容，即“Hi!”。然后赋予新值并显示这个新值——“Hello World!”。
+但是在第二段代码中，情况就截然不同。首先显示 myVar ，得到“undefined”，表明该变量并没有被初始化。问题就出在 var myVar = "Hello World!";，该语句定义了一个局部变量 myVar，而这个局部变量在函数代码段中任何地方都是有效的，尽管可能在初始化之前就调用了该变量。
+另外要注意的是，函数 tit() 中定义了 myVar 变量，但是这并不会改变全局变量 myVar 的值。
+但是如果如同第一段代码，函数中没有重新定义 myVar 变量，全局变量 myVar 的值就改变了。
+<script type="text/javascript">
+    alert(i); // ?
+    var i = 1;
+</script>
+结果是undefined
+4.3.1没有块级作用域
+即函数中无论在那里声明的变量,在整个函数体中都是有定义的。如：
+var i="global";
+function test(o){
+document.write(i);//i为undefined,即函数中i已被声明,但没定义
+var i="local";
+if(typeof o == "object")
+        {
+                var j=0;        //j在整个函数中都有定义,不限于这个循环(好好理解这个概念，即使符合if条件，声明也是有效地，只是undefined)
+                for(var k=0;k<10;k++){//k在整个函数中都有定义,不限于这个循环
+                        document.write(k);
+                }
+                document.write("out loop k=",k);//k仍然有定义,值为10
+        }
+document.write("out loop j=",j);//仍然有定义,如果o不是object(),则j没有被初始化,值为undefined,否则为9
+}
+备注：把所有的变量集中在函数开头声明(不一定要定义)可以避免许多诡异的错误。
+
+声明不分配存储空间，如extern int x; 只是告诉编译器x是整形，已经在其它地方定义了
+定义需要分配存储空间
+初始化是定义变量时候赋给变量的值；
+赋值是以后用到该变量，赋给该变量新的值；
+int x = 100; //定义+初始化
+x = 200; //重新赋值
+声明是在编译时有用的，定义是要在运行时才用的
+声明和定义的区别是
+声明不为变量分配空间，而定义为变量分配空间
+因此同一个变量的声明可以出现多次，而只能定义一次。
+int *p，a = 5 ；这是声明，未分配空间，只告诉如何分配内存（如何：就是分配int型的内存）
+int *p = &a; 这是定义，给指针分配空间。声明的同时赋值就叫定义，
+*P = 10; 这是赋值
+C++的讨论，不知是否准确……
+
+4.3.2未定义的变量和未赋值的变量
+未定义的变量指未声明（包括隐式声明）的变量，使用它会产生错误，但是给未声明的变量赋值并不会引起错误。未赋值的变量是声明了但没有赋值，会得到默认值undefined。
+例如：var x;    //声明一个未赋值的变量。它的值为undefined
+      alert(u);  //使用未声明的变量将一起错误。
+      u  =  3; //给未声明的变量赋值，将创建该变量。
+4.4基本类型和引用类型
+数值，布尔值，null，和未定义undefined的值属于基本类型，对象，数组，函数属于引用类型。
+基本类型和引用类型的之间差别：他们的行为是不同的。
+基本类型在内存中具有固定的大小，数据类型是最大的；引用类型可以具有任意的长度，它们引用指针或者内存地址。
+注意，字符串是基本类型，但它的传递却是引用传递。字符串长度不确定。
+
+Bit意为“位”或“比特”，是计算机运算的基础，属于二进制的范筹；
+Byte意为“字节”，是计算机文件大小的基本计算单位；
+1byte=8bit（1字节=8位）
+一个标准英文字母占一个字节位置，一个标准汉字占二个字节位置。
+
+4.5无用存储单元的收集（GC）
+是自动的，对程序员来说是不可见的。
+4.6作为属性的变量
+全局变量是全局对象的变量，局部变量是调用对象的变量。
+书上这里讲了Javascript的执行环境，还有每个Javascript都有一个和他关联一起的作用域链（scope chain）。
+4.6.1全局对象
+	当JavaScript的解释器开始运行时，它首先要做的事情之一就是在执行任何JavaScript代码之前，创建一个全局对象（global object）。这个对象的属性就是JavaScript程序的全局变量。当声明一个JavaScript的全局变量时，实际上所做的是定义了那个全局对象的一个属性。
+	JavaScript解释器还会用预定义的值和函数来初始化全局对象的许多属性。
+	在客户端JavaScript中，window对象代表浏览器窗口，它是包含在该窗口中的所有JavaScript代码的全局变量。这个全局window对象具有自我引用的window属性，它代替了this属性，可以用来引用这个全局对象。
+4.6.2 局部变量：调用对象
+	局部变量是调用对象的变量。
+4.6.3 JavaScript的执行环境
+	JavaScript的解释器每次开始执行一个函数时，都会为那个函数创建一个执行环境（execution context）。一个执行环境就是所有JavaScript代码段执行时所在的环境，这个环境的一个重要部分是定义变量的对象。因此，运行不属于任何函数的JavaScript代码的环境使用的就是全局对象。所有的函数都运行在自己独有的执行环境中，而且具有自己的调用对象，在调用对象中定义了局部变量。
+	如果一个执行环境中的JavaScript代码可以读写另一个执行环境中定义的属性，并且执行它的函数，那么我们需要考虑安全性问题。
+4.7 深入理解变量作用域
+	每个JavaScript执行环境都有一个和它关联在一起的作用域链（scope chain）。这个作用域链是一个对象列表或对象链。变量名解析（variable name resolution）时，先查看该链的第一个对象，如果有，就采用那个属性的值，如果没有，就继续找第二个对象，以此类推。
+	在一个（非嵌套的）函数中，作用域链是由两个对象构成的。第一个是函数的调用对象，第二个就是全局对象。当函数引用一个变量时，先检查调用对象（局部作用域），其次才检查全局对象（全局作用域）。
+	在一个嵌套函数的作用域链中可以有三个或更多的对象。
+第五章 表达式和运算符
+Javascript的表达式和运算符与C,C++,JAVA类似，本章快速浏览。
+   大致包含运算数的个数，运算数的类型，优先级，结合性。
+1、	最简单的表达式是直接量（值是本身）或变量名（值是变量所存放或引用的值）。表达式是简单表达式通过运算符的合并。
+2、	由于js中所有数字都是浮点型的，所以除法的结果也是浮点型的，eg：5/2=2.5;*/0=正无穷或负无穷;0/0=NaN
+3、	相等运算符（= =）和等同运算符（= = =），（!= 和!= = 道理一样）
+类型 	符号 	说明 	示例 	结果 
+算 
+术 
+运 
+算 
+符 	— 	负值 	-3 	-3 
+	* 	乘法 	5*3 	15 
+	/ 	除法 	5/2 	2.5 
+	% 	取余 	5mod2 	1 
+	+ 	加法 	5+3 	8 
+	— 	减法 	5-3 	2 
+	| 	按位或运算 	5|3 	7 
+	— 	按位与运算 	5&3 	1 
+	<< 	左移 	5<<3 	40 
+	>> 	右移 	5>>1 	2 
+	~ 	取补 	~5 	-6 
+	++ 	递加 	a=5 a++ 	A=6 
+	-- 	递减 	a=5 a-- 	a=4 
+字符运算符 	+ 	字符串连接 	“A”+”B” 	“AB” 
+比 
+较 
+运 
+算 
+符 	= = 	等于 	5==3 	False 
+	!= 	不等于 	5!=3 	True 
+	< 	小于 	5<3 	False 
+	> 	大于 	5>3 	True 
+	<= 	小于等于 	5<=3 	False 
+	>= 	大于等于 	5>=3 	True 
+逻 
+辑 
+算 
+符 	! 	逻辑非 	! True 	False 
+	&& 	逻辑与 	True & &False 	False 
+	| |	逻辑或 	True | |False 	True 
+	^ 	逻辑异或 	True ^ False 	True 
+
+其它：delete   删除一个属性（一元的）的定义。
+      typeof    返回数据类型。
+      void      返回未定义的值。
+      instanceof   检查对象类型   
+      in        检查一个属性是否存在
+Javascript还支持三目运算符（ternary operator）”?:”.
+ in可以检查指定字符串是否是一个对象的基本属性或方法名称；instanceof运算符返回左边的对象是否右边类的一个实例；delete可以删除一个属性，它不会影响到属性关联的对象的生存，若该属性不存在会返回true；[]可以以字符串的方式存取对象的属性。
+      typeof函数的返回值：数字——number，字符串——string，布尔值——Boolean，对象、数组、null——object，函数名——function或undefined（未定义时）。主要用来区别区别对象和原始类型。要区分对象的具体类型，用instanceof运算符。
+
+   关于具体内容，可以参考书。
+第六章 语句
+6.1表达式语句
+常见的有赋值，函数调用等语句。
+6.2复合语句
+   用花括号把几个语句括起来形成语句块（statement block）。举例：
+{
+x  =  Math.p1;
+cx  = Math.cos(x);
+alert(“cos(”+x+’)=’+cx);
+}
+注意：语句块可以作为一个语句，但是它的结尾处不需要分号。
+Javascript语句可以包含别的语句，这样的语句叫做复合语句（compound statement）。
+6.3if语句6.4 else if语句
+注意if,else的匹配。
+6.5switch语句
+注意不要忘记case语句后面的break;
+6.6while语句6.7do/while语句6.8for语句
+6.9for/in语句
+for(variable in object)
+statement
+提供了一种遍历对象属性的方法。举例：
+for ( var prop in obj){
+document.write(‘name : ”+prop+”;value: “+obj[prop]’,<br>’);
+}
+Function语句
+   就是Javascript常见的function函数形式。
+函数定义通常出现在Javascript代码的顶层，不能出现在if语句,while循环或其他语句中。
+return  语句
+可以带参数返回，也可以不带参数，来终止程序的运行。
+throw语句，try/catch/finally语句（基本与java类似）
+6.20Javascript语法小结（书121页）
+Table 6-1. JavaScript statement syntax
+Statement	Syntax	Purpose
+词语	语法	用途
+break	break;
+break label;	Exit from the innermost loop or switch statement or from the statement named by label
+case	case expression:	Label a statement within a switch statement
+continue	continue;
+continue label;	Restart the innermost loop or the loop named by label
+default	default:	Label the default statement within a switch statement
+do/while	do
+statement
+while (expression);	An alternative to the while loop
+empty	;	Do nothing
+for	for (initialize ; test ; increment)
+statement	An easy-to-use loop
+for/in	for (variable in object)
+statement	遍历一个对象的属性
+function	function funcname([arg1[..., argn]])
+{
+statements
+}	Declare a function
+if/else	if (expression)
+statement1
+[else statement2]	Conditionally execute code
+label	identifier: statement	Give statement the name identifier
+return	return [expression];	Return from a function or return the value of expression from a function
+switch	switch (expression) {
+statements
+}	Multiway branch to statements labeled with case or default:
+throw	throw expression;	Throw an exception
+try	try {
+statements
+}
+catch (identifier) {
+statements
+}
+finally {
+statements
+}	Catch an exception
+var	var name_1 [ = value_1]
+[ ,..., name_n [ = value_n]];	Declare and initialize variables
+while	while (expression)
+statement	A basic loop construct
+with	with (object)
+statement	Extend the scope chain (deprecated)
+
+第七章 函数
+7.1 函数的定义和调用
+return语句能使函数停止运行，并且把表达式的值（如果存在这样的表达式）返回给调用者；如果函数不包含return语句，它就只执行函数体中的每条语句，然后返回给调用者undefined。
+	括号之内的参数变量只有在执行函数的时候才会被定义，一旦函数返回，它们就不再存在。
+	无类型语言不能给参数指定数据类型，如果重要，可以用运算符typeof进行检测；如果调用时传递的参数少了，会被赋值undefined，如果多了，会被忽略。解决方法以后指出。
+7.1.1 嵌套的函数
+7.1.2 Function()构造函数
+function语句并非是定义新函数的唯一方法，还可以使用Function()构造函数和new运算符动态地定义函数，如：
+var f = new Function("x", "y", "return x*y");
+等价于function f(x, y) { return x * y; }
+Function()构造函数允许我们动态地建立和编译一个函数，它不会将我们限制在function语句预编译的函数体中。其负面效应是每次调用一个函数时，Function()构造函数都要对它进行编译，因此，在循环体或者在经常使用的函数中，不要频繁地调用这个构造函数。
+7.1.3 函数直接量
+这是第三种创建函数的方式。函数直接量语法和function语句类似，只不过它被用作表达式，而不是用作语句，而且也无需指定函数名。
+function f(x, y) { return x * y; }//function语句
+var f = new Function("x", "y", "return x*y");//构造函数
+var f = function(x, y) { return x * y };//函数直接量，无函数名
+“几乎”是等价的，以后讨论其区别……
+虽然函数直接量创建的是未命名函数，但也可以指定函数名，这在编写调用自身的递归函数时非常有用。例如：
+var f = function fact(x) { if(x<=1) return 1; else return x*fact(x-1); };
+上面代码定义了一个未命名函数，并把对它的引用存储在变量f中。它并没有真正创建一个名为fact()的函数，只是允许函数体用这个名字来引用自身。但是要注意，JavaScript1.5之前的版本没有正确实现这种命名了的函数直接量。
+函数直接量只被解析和编译一次，而作为字符串传递给Function()构造函数的JavaScript代码则在每次调用构造函数时只需被编译和解析一次。
+
+7.2 作为数据的函数
+7.3 函数的作用域：调用对象
+7.4 函数的实际参数：Arguments对象
+7.5 函数的属性和方法
+
+
+Function 函数名 (参数，变元) {
+函数体;
+Return 表达式；
+}
+说明：
+当调用函数时，所有变量或字面量均可做为变元传递。
+函数由关键字Function定义。
+函数名:自己定义的函数的名字。
+参数表：是传递给函数使用操作的数，可以是常量，变量或者表达式。
+可以通过函数名来调用一个函数。
+必须使用Return将值返回。
+函数名对大小写是敏感的。
+定义方法
+function f(x, y) { return x * y; }    //function语句
+var f = new Function("x", "y", "return x*y");//前n-1个字符串表示参数，最后一个字符串是函数主体
+var f = function(x, y) { return x * y };//函数直接量，没有函数名
+函数内部有一个Arguments的对象arguments，它包含实际传入此函数的参数信息。
+function f(x,y,z){
+ var actual = arguments. length;//实际参数个数
+ var expected = arguments.callee.length;//方法名.length表示要求参数个数
+ return actual == expected;
+}
+alert(f(1,2,3))
+属性：callee
+返回正被执行的 Function 对象，也就是所指定的 Function 对象的正文。
+需要注意的是callee拥有length属性，这个在有的时候用于验证还是比较好的。
+7.5函数的属性和方法
+length--形参个数；prototype--在被new调用作构造函数时使用；自定义属性--在函数多次调用之间保持数值；apply和call--使函数像其它对象的方法一样调用。
+第八章 对象
+Javascript中的构造函数与普通函数在定义时不无明显区别，主要是在执行和实现中表现出差异：
+构造函数有new调用；
+传递给构造函数的是新构造的对象的空间引用，在函数中通过this引用此对象。
+用构造函数定义方法由于在类的多实例中有多个方法属性拷贝，造成空间浪费，所以类方法通常通过构造函数的prototype属性定义。通过prototype实现第属性继承只发生在读属性时，而写时不会发生。
+1、对象的创建
+var o = new Object();
+var circle = { x:0, y:0, radius:2 };//对象直接量
+2、属性的枚举（只列出用户定义的属性和方法（包括原型对象的属性和方法），不包含预定义的属性和方法），例子：
+var a = new Object();
+a.num = 10;
+a.fun = function(){return 5;};
+function display(obj){
+ var names = "";
+ for(var name in obj)
+  names += name + "\n";
+ alert(names);
+}
+display(a);
+3、未定义的属性是undefined，与数组一样。
+4、方法：方法是用来对this对象进行操作的，而函数通常是独立的，并不需要使用this对象。
+5、原型对象和继承：用构造函数把对象的属性和方法初始化效率很低，因为每个此类对象都存一份这些的副本，更有效的方法是通过原型对象的方法声明方法和属性使对象共享这些。寻找方法或属性的方法是现在本对象找，找不到再去原型对象里找，直到Object。
+javascript是以原型对象为基础的继承机制，而不是像java一样以类为基础的继承机制。
+function Father(){}
+function Son(){}
+Father.prototype.name = "max";
+Son.prototype = Father;//只能保证取道Father的变量和方法，无法取到Father. prototype的
+Son.prototype = new Father();//可以取到Father. prototype的
+document.write(Father.name);//不是max，因为不创建Father的对象的话，就只在Father里找，不会到他的prototype里找。
+var father = new Father();
+document.write(father.name);//是max
+6、关联数组：
+object.property
+object.["property"]
+以上两种方式访问对象，后一种被称为关联数组（associative array）
+第九章 数组
+1、创建数组：
+var a = new Array();
+var a = new Array(5, 4, 3, "test");//数组为[5,4,3,"test"]
+var a = new Array(10);//10表示此数组有10个元素，每个都是undefined（未赋值的数组元素默认为undefined）。
+数组直接量：
+var a = [2, "test",[1,2]]//多维数组
+2、数组是稀疏的（不连续）
+a[0] = 1;
+a[1000] = "test";
+a.length =
+3、数组的长度总是比最大元素的下标多一，
+var a = new Array();
+a[1] = 2;
+a[1000] = 3;
+a.length = 1001;未定义的都为undefined
+4．数组的方法
+Array.join()可以把一个数组的所有元素都转换成字符串，然后把他们连接起来。例如：
+var a = [1,2,3];
+var s =a.join(); //s=”1,2,3”
+Array.reverse()将颠倒数组元素的顺序并返回颠倒后的数组。
+Array.sort()方法是在原数组的基础上对数组元素进行排序，返回排序后的数组。
+Array.contect()能创建并返回一个数组。举例：
+var a = [1,2,3];
+a.contect(4.5);//返回[1，2，3，4，5]
+Array.slice()方法返回指定数组的片段（slice），或者子数组。该方法返回一个新数组，包含了源函数从start到 end 所指定的元素，但是不包括end元素，比如a.slice(0,3)；如果 start 为负，那么它所指定的是相对于数组中最后一个元素而言，参数值为-1指定的数组最后一个元素。如果省略 end ，那么 slice 方法将一直复制到源数组结尾，比如a.slice(1)。如果 end 出现在 start 之前，不复制任何元素到新数组中，比如a.slice(4,3)。 
+Array.splice()方法是插入或删除数组元素的通用方法。
+     从一个数组中移除一个或多个元素，如果必要，在所移除元素的位置上插入新元素，返回所移除的元素。
+arrayObj.splice(start, deleteCount, [item1[, item2[, . . . [,itemN]]]])
+参数
+arrayObj
+必选项。一个 Array 对象。
+start
+必选项。指定从数组中移除元素的开始位置，这个位置是从 0 开始计算的。
+deleteCount
+必选项。要移除的元素的个数。
+item1, item2,. . .,itemN
+必选项。要在所移除元素的位置上插入的新元素。
+说明
+splice 方法可以移除从 start 位置开始的指定个数的元素并插入新元素，从而修改 arrayObj。返回值是一个由所移除的元素组成的新 Array 对象。
+示例
+var a=[1,2,3] a.splice(1,1,4,6,7,8) //移除第二个，然后在第一个后插入4,6,7,8,返回：1,4,6,7,8,3 
+alert(a); 
+a.splice(0,1,3) //移除第一个，然后在第一个前插入3,返回：3,4,6,7,8,3 
+alert(a); 
+a.splice(2,0,5) //在第三个元素插入一个5,返回：3,4,5,6,7,8 
+alert(a); 
+a.splice(-1,1) //移动最后一位,类似shift方法,返回：3,4,5,6,7,8 
+alert(a);
+
+Push与pop方法：在数组的尾部添加或删除数组元素。
+Shift和unshift方法。
+
+
+第二部分 客户端的JAVASCRIPT
+第十二章 WEB浏览器的JAVASCRIPT
+12.1web浏览器环境
+Window类的实例是全局对象，用它的window或者self属性可引用它自己。
+因此，所有的全局变量都被定义为该对象的属性。
+一个应用程序出现的每个窗口或框架都对应一个Window对象，而且都为客户端JavaScript代码定义了一个唯一的执行环境。
+ 12.1.2 客户端的对象层次和文档对象模型
+  例如：window.document.form[0];
+   
+客户端的对象层次和0级DOM
+12.1.3事件驱动的程序设计模型
+ Javascript是基于对象(object-based)的语言，这与Java不同Java是面向对象的语言。而基于对象的基本特征，就是采用事件驱动(event-driven)。通常鼠标或热键的动作，我们称为事件(event)，而由鼠标或热键引发的一连串程序的动作，我们称为事件驱动(event-driver)。而对事件进行处理的程序或函数，我们称之为事件处理程序(event handler)。
+ 12.2 在HTML中添加javascript
+(1)<script type="text/javaScript">
+//代码
+</script>
+(2)在链接上使用伪协议 :
+ <a href="javascript:void window.open();">Open</a> 
+(3) 使用独立的js脚本:
+<script language="javascript" src="/js/dialog.js" />
+脚本执行过程是Web浏览器的HTML解析过程的一部分。脚本按照它们的出现顺序执行
+12.2.3事件处理程序：
+   <input   type=checkbox   name=test   value=1   onclick='txt.disabled=this.checked'>
+Javascript中的事件驱动是由鼠标或热键的动作引发的。主要有以下几种事件
+(1) onClick (单击事件)
+当用户单击鼠标按钮的时，产生onClick事件，同时onClick指定的事件处理程序或代码将被调用执行。通常在下列基本对象中产生：
+button (按钮事件)
+checkbox (复选框)
+radio (单选框)
+reset buttons (复位按钮)
+submit buttons (提交按钮)
+例如可以通过以下的按钮，激活change()文件。
+<form>
+<input type="button" value="" onclick="change()">
+</form>
+在onclick等号后面可以使用自己编写的函数作为事件处理程序，也可以使用Javascript中内部的函数，还可以直接使用Javascript代码。如
+<form>
+<input type="button" value="" onclick="alert(这是个onclick的例子)">
+</form>
+(2) onChange (改变事件)
+a、当使用text或textarea元素输入字符值改变时引发该事件。
+b、在Select表格项中的一个选项状态发生改变后引发该事件。
+如
+<form>
+<input type="text" name="test" value="test" onchange="alert(this.test)">
+</form>
+(3) onSelect (选中事件) 
+当text或Textarea中的文字被选择加亮时引发该事件。
+(4) onFocus (获得焦点事件) 
+当用户单击text或textarea以及select对象时，产生该事件，此时该对象成为前台对象。
+(5) onBlur (失去焦点事件)
+当text、textarea、select失去焦点，而退到后台时，引发该事件，它与onFocus是一个对应的关系。
+(6) onLoad(载入事件)
+当文档或框架被完全装载时引发该事件，onload的一个作用就是在首次载入一个文档的时候检测cookie的值，并用一个变量为其赋值。使它可以被源代码使用。
+(7) onUnload(卸载事件)
+当WEB页面退出时引发onunload并可更新cookie的值。
+12.3 javascript程序的执行
+ 脚本的执行过程是web浏览器的HTML解析过程的一部分，脚本按照它们的出现顺序执行。
+ （1） 你编写的脚本不应该操作还没有创建的对象。
+ （2） 事件处理程序调用函数必需注意：
+①所有函数都要在事件处理程序调用它之前定义。
+②事件处理程序和它们所调用的对象都不能使用还没有定义的对象。
+  
+第十三章 窗口和框架
+13.1window对象概述
+window对象具有如下属性： 
+status /statusbar /atusbar.visible /defaultstatus /location /locationbar /locationbar.visible /self /name 
+closed /frames /frames.length /length /document /history /innerHeight /innerWidth /menubar /menubar.visible /opener /outerHeight /outerWidth /pageXOffset /pageYOffset /parent /personalbar /personalbar.visible /scrollbar /scrollbar.visible /toolbar /toolbar.visible /top 
+Window的常见方法
+
+简单的对话框可用：alert()、 confirm()、 prompt()之一。
+alert() 显示一个消息框，只有一个 'OK' ('确定') 按钮； 
+confirm() 显示一个对话框，带有 'OK' ('确定') 和 'Cancel' ('取消') 按钮； 
+<script language="javascript">
+if(confirm("看163吗？:)"))     
+  location. replace("http://www.cnweblog.com/zuroc/");
+  </script>
+prompt() 显示一个可以让用户输入信息的对话框。 
+举例：
+<script language="javascript">
+var test=window.prompt("请输入测试数据");
+document.write(test+"Javascript输入输出测试");
+</script>
+13.3状态栏
+status 浏览器状态栏的显示文本
+ * defaultStatus 浏览器状态栏显示文本的默认值 该属性在firefox默认关闭,不介绍了
+13.4超时设定和时间间隔
+setTimeout() 安排一个JavaScript代码在指定的时间后执行 * clearTimerout() 取消setTimeout的执行 * setInterval() 每隔指定的时间调用指定的函数 * clearInterval() 取消Interval的执行 
+<script language="javascript">
+function hi(){alert("hi!");}
+setInterval("hi()",2000);//2000ms=2s
+</script>
+时间间隔方法为： setInterval()、 cleraInterval() 。
+13.5错误处理
+只要给这个属性赋了一个函数,那么这个窗口只要发生了javascript错误,该函数就会被调用.传给错误处理函数的参数有三个,第一个是错误类型,第二个是引发错误的js脚本的Url,第三是发生错误的行号. 
+如果onerror返回true,它将屏蔽系统的错误处理程序 
+//如果你不想错误消息打搅用户,无论你的代码有多Bug
+window.onerror = function(){return true;}
+13.6 Navigator浏览器的信息 
+* appName Web浏览器的名称 * userAgent 浏览器在USER-AGENT HTTP标题中发送的字符串,通常包含了appName和appVersion * platform 平台,如Win32 
+//一个简单浏览器探测器
+var browser = {
+    version: parseInt(navigator.appVersion),
+    isNetscape: navigator.appName.indexOf("Netscape") != -1,
+    isMicrosoft: navigator.appName.indexOf("Microsoft") != -1
+};
+13.7 screen对象
+* width,height 分辨率的宽和高 * availWidth , availHeight 去除了任务栏这样的特性的宽和高 * colorDepth 屏幕的色深
+13.8 window对象的控制方法
+13.8.1打开窗口
+window = object.open([URL ][, name ][, features ][, replace]]) 
+URL：新窗口的URL地址 
+name：新窗口的名称，可以为空 
+featurse：属性控制字符串，在此控制窗口的各种属性，属性之间以逗号隔开。 
+fullscreen= { yes/no/1/0 } 是否全屏，默认no 
+channelmode= { yes/no/1/0 } 是否显示频道栏，默认no 
+toolbar= { yes/no/1/0 } 是否显示工具条，默认no 
+location= { yes/no/1/0 } 是否显示地址栏，默认no 
+directories = { yes/no/1/0 } 是否显示转向按钮，默认no 
+status= { yes/no/1/0 } 是否显示窗口状态条，默认no 
+menubar= { yes/no/1/0 } 是否显示菜单，默认no 
+scrollbars= { yes/no/1/0 } 是否显示滚动条，默认yes 
+resizable= { yes/no/1/0 } 是否窗口可调整大小，默认no 
+width=number 窗口宽度（像素单位） 
+height=number 窗口高度（像素单位） 
+top=number 窗口离屏幕顶部距离（像素单位） 
+left=number 窗口离屏幕左边距离（像素单位）
+窗口的名字（name）：_blank 表示新开一个窗口，_parent表示父框架窗口，_self表示覆盖该窗口，xxx表示覆盖名字为xxx的窗口
+注意：调用应该明确指明是window.open()，以避免和document.open()方法混淆。同时还应该调用focus()方法使窗口成焦点保证窗口可见。opener属性是打开自己的那个窗口，若是用户手动打开，这位null。
+关闭窗口
+关闭窗口用window.close()方法，窗口关闭后，代表它的Window对象可能还生存，可用closed属性进行判断它是否已经被关闭。
+移动窗口/改变大小
+moveTo 把窗口左上角移到指定的坐标 * moveTo 把窗口相对现在的位置移动指定的象素 * resizeTo 按照绝对大小调整窗口 * resizeBy 按照相对大小调整窗口 
+焦点控制 focus 和 blur
+focus() 将焦点给指定窗口,同时把窗口移动到最前端,使窗口可见,当open()打开窗口,如果第二个参数指定的窗口名已经存在,open不会自动使那个窗口可见,这时就要调用该函数
+ blur() 放弃焦点,这时窗口将被至于窗口队列的最后。 
+文档滚动
+scrollBy() 相对当前位置滚动指定的象素 *
+scrollTo() 将文档滚动到一个绝对位置,文档的左上角的坐标为(0,0)
+13.9 location对象
+location属性代表当前显示文档的URL。对其赋值使浏览器装载新的URL（用Back按钮能回退到原页面）。其实，它是Location类的一个实例，它还有一个reload()方法可以装载信的URL（用Back按钮不能回退到原页面）。
+它还有各个属性如下 
+* location.protocol 用的协议,如在本地直接打开网页则是file: 
+* location.host 用的域名 
+* location.pathname 域名后的网址路径.如"/F:/Javascript/example/test.html " 
+* location.search 查询的内容 
+* location.reload() 刷新当前线 
+* location.replace() 跳转到指定的URL,与直接给location赋值不同的是,这样不会在浏览历史中留下记录(也就是后退不会到该页)
+可以将一个新的URL字符串赋值给窗口的location属性。
+//检查浏览器是否支持DOM,如果不支持则跳转
+if (!document.getElementById) location = "staticpage.html";
+13.10 history对象
+history属性可看成是代表历史URL的一个特殊数组，它的可读length属性表明数组的长度
+脚本不能真正访问History数组,但是可以调用它的函数 
+* back() 后退 * forward() 前进 * go() 后退/前进指定的页数 
+13.11多窗口和多框架
+一个窗口中的任何框架都可以使用属性frames、parent和top引用窗口中的其它框架。
+每个窗口有一个frame[]数组(如果一个窗口没有框架则它的frame[]是空的,frames.length==0),frame[0]表示它的第一个子框架,如此类推 。
+每个窗口还有一个parent属性,为包含这个窗口的window对象,这样一个窗口通过诸如parent.frames[1]的方式,引用他的兄弟窗口 
+对于顶层窗口,有parent==window
+对于框架中的框架,可以用top直接引用最顶层的窗口
+13.11.2窗口和框架的名字
+框架可以用name指定名字,这个名字可以为链接的target值.当这个链接被激活的时候会在指定的框架中显示内容 
+在javascript也可以通过名字访问框架,如一个框架如下 
+<frame name="table_of_contents" src="top.html">
+则可以通过parent.table_of_contents方法访问该框架 
+需要注意的在一个框架定义的函数/变量,在另一个框架中要通过框架名来调用 
+第十四章 Document对象
+14.1document对象的概揽
+关键方法：
+ Close(),open(),write(),writeln();writeln会在文本之后自动输出一个回车符
+属性
+bgColor - 页面的背景色； 
+fgColor - 页面的前景色，即文本的颜色； 
+linkColor - 超文本链接的颜色； 
+links[]代表文档中的Link对象数组，由HTML的<a href …>或者<area>定义，Link对象代表超级链接的URL，具有Location类的所以属性。
+images - 图片对象组成的数组，数组中的每一个元素对应于网页中的每一个 <IMG> 标记，数组元素对应的顺序是在 HTML 文件代码中标记出现的先后顺序；
+anchors[]代表文档中的Link对象数组，由HTML的<a>定义。
+applets[]代表文档中的Link对象数组，由HTML的<applet>或<object>嵌入在文档中的Applet对象组成。
+embeds[]代表文档中的Link对象数组，由HTML的<embed>或<object>嵌入在文档的非Applet对象组成。
+Write()方法可以生成网页内容，但只能在文档被解释时调用，即在<script>块中调用。创建新文档的标准格式为：xxx.document.open(); xxx.document.write(“ABC”);  …  xxx.document.close();  其中的open()方法是可选的， JavaScript会隐式打开一个新的文档。
+ 用Image()构造函数能产生一个屏外图像，强迫浏览器装载图像，其onload事件处理程序能在图片装载后马上执行。
+14.14document对象的命名
+通用的命名规则是，一个HTML文档中的每个<form>元素都会在document对象的forms[]中创建一个带编码的的元素，同样,每个<img>对应于images[]的元素。
+   除了这些数组外，如果与form,image对象对应的HTML中设定了name性质，则可以用这些名字来引用对象。出现name性质时，他的值将被用作Document对象的属性名。例如：
+<form name=”f1”>
+……………………..
+</form>
+  引用：Document.froms[0]。
+     Document.f1  //用名字引用。
+其他举例：
+<form name="shipping">
+  ...
+  <input type="text" name="zipcode">
+  ...
+</form>
+You can refer to the text input field element of this form with an intuitive syntax:
+document.shipping.zipcode
+14.15 Document对象和事件处理程序
+在HTML中，通过Javascript代码赋予一个事件处理程序性质可以定义事件处理程序。
+In HTML, event handlers are defined by assigning a string of JavaScript code to an event-handler attribute. In JavaScript, however, they are defined by assigning a function to an event-handler property. Consider the following <form> and its onsubmit event handler:
+<form name="myform" onsubmit="return validateform();">...</form>
+In JavaScript, instead of using a string of JavaScript code that invokes a function and returns its result, simply assign the function directly to the event-handler property like this:
+document.myform.onsubmit = validateform;
+14.2. 动态文档生成
+只能在<script>中调用document.write方法。
+document.write("Hello, "  + username + " Welcome to my blog!");
+Write方法还可以与open()方法及close()方法一起在窗口和框架中创建新文档。
+14.6使用src属性的图象置换方法
+<a href=”help.html”  onmouseover=”document.helpimages.src=’images/1.gif’”
+     Onmouseout=”document.helpimages.src=’images/2.gif’” >
+<Img  name=”helpimages” src=”images/2.gif” width=20 height=20 >
+</a>
+Image对象的世间处理程序
+对应于onload，当图象被完全装载后程序就会被调用。
+14.7链接
+ Document对象的Link[]数组包含代表文档中超文本连接的Link对象。
+举例：列出文档中所有链接的列表。
+ Function listlinks(d){
+
+Var newwin = window.open(“”,”linklist”,”menubar,scrollbar,width=300,height=200”);
+      For(var i=0;i<d.links.length;i++)
+     {
+        Newwin.document.write(‘<a href=’+d.link[i].href+’>’);
+Newwin.document.write(d.link[i].href); 
+Newwin.document.write(‘</a><br>’);
+     }
+Newwin.document.close();
+}
+14.8 锚
+Document对象的数组anchors[]包含了代表HTML文档中已命名位置的Anchor对象，这些位置都是由标记<a>和他的性质<name>所标记。
+<a name="name">  // Links may refer to this anchor by this name
+    ...
+</a>
+使用：
+<a href=”#name”> </a>
+第十五章  表单和表单元素
+15.1 表单对象 （The Form Object）
+Document对象的属性forms[]数组元素的可以找到数组对象。在这个数组中，From对象是按照他们在数组中出现的顺序存放的。所以，document.forms[0]是文档中第一个表单. You can refer to the last form in a document with the following:
+document.forms[document.forms.length-1]
+elements数组，它包含表示各种表单输入元素的Javascript对象。这个数组的元素的也是按照它们在文档中出现顺序，举例，引用当前文档的第二个表单的第三个元素。
+document.forms[1].elements[2]
+Form对象的其他对应的属性： action, encoding, method, target。
+与Form的submit() and reset()对应的JS方法, onsubmit和onreset。前者用来探测表单的提交，后者用来探测表单的重置。
+15.2定义表单元素（Defining Form Elements）
+下面例子把常见的表单元素列举出来。
+Figure 15-1. HTML form elements
+ 
+大部分元素都是由HTML的标记<input>创建的，实际上都是input对象。
+HTML form elements
+对象	HTML 标记	type 属性	描述和事件
+Button	<input type="button"> or <button type="button">	"button"	按纽; onclick.
+Checkbox	<input type="checkbox">	"checkbox"	复选框; onclick.
+File	<input type="file">	"file"	用于上传文件名的输入框; onchange.
+Hidden	<input type="hidden">	"hidden"	随表单提交的数据，对用户不可见;没有事件处理程序
+Option	<option>	none	下拉框select对象的一个项，事件处理程序属于select.
+Password	<input type="password">	"password"	密码类型，不可见; onchange.
+Radio	<input type="radio">	"radio"	单选框; onclick.
+Reset	<input type="reset"> or <button type="reset">	"reset"	表单重置按纽; onclick.
+Select	<select>	"select-one"	列表或下拉菜单,可选择一个选项; onchange. 
+Select	<select multiple>	"select-multiple"	列表,可选择多个选项; onchange.
+Submit	<input type="submit"> or <button type="submit">	"submit"	提交按纽; onclick.
+Text	<input type="text">	"text"	单行文本输入框; onchange.
+Textarea	<textarea>	"textarea"	多行文本输入框; onchange.
+下面是例子代码：
+<form name="everything">      <!—一个包含所有元素的表单... -->
+ <table border="border" cellpadding="5">   <!-- in a big HTML table -->
+   <tr>
+     <td>Username:<br>[1]<input type="text" name="username" size="15"></td>
+     <td>Password:<br>[2]<input type="password" name="password" size="15"></td>
+     <td rowspan="4">Input Events[3]<br>
+       <textarea name="textarea" rows="20" cols="28"></textarea></td>
+     <td rowspan="4" align="center" valign="center">
+       [9]<input type="button" value="Clear" name="clearbutton"><br>
+       [10]<input type="submit" name="submitbutton" value="Submit"><br>
+       [11]<input type="reset" name="resetbutton" value="Reset"></td></tr>
+   <tr>
+     <td colspan="2">
+       Filename: [4]<input type="file" name="file" size="15"></td></tr>
+   <tr>
+     <td>My Computer Peripherals:<br>
+       [5]<input type="checkbox" name="extras" value="burner">DVD Writer<br>
+       [5]<input type="checkbox" name="extras" value="printer">Printer<br>
+       [5]<input type="checkbox" name="extras" value="card">Card Reader</td>
+     <td>My Web Browser:<br>
+       [6]<input type="radio" name="browser" value="ff">Firefox<br>
+       [6]<input type="radio" name="browser" value="ie">Internet Explorer<br>
+       [6]<input type="radio" name="browser" value="other">Other</td></tr>
+   <tr>
+     <td>My Hobbies:[7]<br>
+       <select multiple="multiple" name="hobbies" size="4">
+         <option value="programming">Hacking JavaScript
+         <option value="surfing">Surfing the Web
+         <option value="caffeine">Drinking Coffee
+         <option value="annoying">Annoying my Friends
+       </select></td>
+     <td align="center" valign="center">My Favorite Color:<br>[8]
+       <select name="color">
+         <option value="red">Red        <option value="green">Green
+         <option value="blue">Blue      <option value="white">White
+         <option value="violet">Violet  <option value="peach">Peach
+       </select></td></tr>
+ </table>
+</form>
+
+<div align="center">     <!—另一个表，上表的关键 -->
+  <table border="4" bgcolor="pink" cellspacing="1" cellpadding="4">
+    <tr>
+      <td align="center"><b>Form Elements</b></td>
+      <td>[1] Text</td>  <td>[2] Password</td>  <td>[3] Textarea</td>
+      <td>[4] FileU</td> <td>[5] Checkbox</td></tr>
+    <tr>
+      <td>[6] Radio</td>  <td>[7] Select (list)</td>
+      <td>[8] Select (menu)</td>  <td>[9] Button</td>
+      <td>[10] Submit</td>  <td>[11] Reset</td></tr>
+  </table>
+</div>
+
+<script>
+// 这个通用的函数把一个事件的细节添加到上面表单的textarea区域。
+function report(element, event) {
+    if ((element.type == "select-one") || (element.type == "select-multiple")){
+        value = " ";
+        for(var i = 0; i < element.options.length; i++)
+            if (element.options[i].selected)
+                value += element.options[i].value + " ";
+    }
+    else if (element.type == "textarea") value = "...";
+    else value = element.value;
+    var msg = event + ": " + element.name + ' (' + value + ')\n';
+    var t = element.form.textarea;
+    t.value = t.value + msg;
+}
+
+// 该函数给每个表单事件添加事件处理程序。
+// 它调用了上面的 report()函数。
+//注意，我们是通过把函数赋给Javascript对象的属性定义事件处理程序，而//不是通过给HTML元素的性质赋予字符串来定义事件程序。
+function addhandlers(f) {
+    // 遍历表中所有元素。
+    for(var i = 0; i < f.elements.length; i++) {
+        var e = f.elements[i];
+        e.onclick = function( ) { report(this, 'Click'); }
+        e.onchange = function( ) { report(this, 'Change'); }
+        e.onfocus = function( ) { report(this, 'Focus'); }
+        e.onblur = function( ) { report(this, 'Blur'); }
+        e.onselect = function( ) { report(this, 'Select'); }
+    }
+
+    //为三个.按纽定义专门的事件处理程序
+    f.clearbutton.onclick = function( ) {
+        this.form.textarea.value=''; report(this,'Click');
+    }
+    f.submitbutton.onclick = function ( ) {
+        report(this, 'Click'); return false;
+    }
+    f.resetbutton.onclick = function( ) {
+        this.form.reset( ); report(this, 'Click'); return false;
+    }
+}
+// 最后，通过添加所有可能的事件程序激活表单
+addhandlers(document.everything);
+</script>
+15.3 脚本化表单元素（Scripting Form Elements）
+命名表单和表单元素(Naming Forms and Form Elements)
+举例，引用“address”表单的zipcode元素：
+document.address.zipcode
+它比使用了依赖位置的要好，如下：
+document.forms[1].elements[4]
+为了使HTML表单中的一组Radio元素表现出“互斥”的特性，他们必须具有相同的name性质。当表单中有多个元素具有相同的name性质时，Javascipt就把这些元素放到数组中，这个数组的名字就是name性质的值。数组元素的性质就是他们在文档中出现的顺序。
+举例：
+document.everything.browser[0]
+document.everything.browser[1]
+document.everything.browser[2]
+
+15.3.2表单元素的属性(Form Element Properties)
+
+Type   一个只读字符串，标记表单元素的类型。
+Form   对包含该元素的 Form对象的只读对象引用。
+Name  由HTML的name性质指定的只读性质。
+Value   一个可读可写的字符串，指定了表单元素包含或表示的“值”。
+
+15.3.3 表单元素的处理程序（Form Element Event Handlers）
+
+Most form elements support most of the following event handlers: 
+Onclick   当用户在元素上点击鼠标时触发。
+Onchange  当用户改变了元素表示的值（通过输入文本或选择）时触发。这个事件处理程序的调用说明发生了完整的改变。
+Onfocus   在表单元素收到焦点事件时触发。
+Onblur   在表单元素失去焦点事件时触发。
+15.3.4 按钮（Push Buttons）
+Button  元素的value属性控制在按纽上显示的文本。
+Submit 和 reset 元素有着相同的元素，不同的事他们他们具有默认的动作（提交和重置）。
+如果Onclick处理程序返回值是false,这两种按钮的默认动作就不会执行。
+
+15.3.5 切换按钮（Toggle Buttons）
+
+Checkbox元素和radio元素都是切换按钮，可以被选中或取消。
+具体可以参考前面的例子，
+document.everything.extras[0]  //第一个名为extras表单元素。
+Radio 和 checkbox 都定义了checked属性，这个可读可写的布尔值指定了当前元素是否被选中。
+Radio 和 checkbox元素本身不显示任何文本，通常显示临近的HTML文本，这意味着设置他们的value的属性不会改变他们的外观，但能改变发送给服务器的字符串。
+  当用户点击切换按纽的时候，radio或者checkbox元素将触发的onclick事件处理程序。
+15.3.6 文本框（Text Fields）
+
+Text元素它允许用户输入单行文本串，它的value属性表示用户输入的文本。可以把该属性设置为应该在文本框中显示的文字。用户在焦点移出文本框说明输入完毕，将触发onchange事件。
+    Textarea和text类似，只是它允许用户输入多行文本。Textarea元素是由<textarea>标记创建的，它可以使用Text的value和onchange事件处理程序。
+Password元素是修改过的Text元素，用户输入时它显示星号。也有value和onchange事件处理程序。
+Fileupload对象用于输入要上载到服务器上的文件名，它与Text元素一样具有onchange事件处理程序，但是它的value 属性是只读的，防止恶意程序。
+onkeypress, onkeydown, and onkeyup等事件处理程序（它们不是DOM标准的一部分），在text或相关表单元素设置它们有用，这些元素真正接受键盘输入。从onkeypress或onkeydown事件处理程序返回false可以阻止用户的键盘输入被记录下来。
+15.3.7 select元素和Option元素（Select and Option Elements）
+浏览器通常用下拉菜单或列表框表示select元素。Select元素可以用两种不同的方式操作，type属性的值由它的配置决定。如果<select>标记有<multiple >性质，就允许用户进行多项选择。这种<select>对象的type属性就是“多选”，否则就是“单选”。
+当用户选中或取消一个选项时，将触发它的onchange事件处理程序，对于“单选”型的select元素，可读可写的属性selectedIndex用数字指定了当前被选中的选项。对于”多选型”的select元素,要确定选中了哪些项，必须遍历options[]数组所有的元素，检查每个Option对象的selected属性的值。
+Value 属性是可读可写的字符串，指定了提交表单时要发给web服务器的字符串。
+15.3.8 hidden元素
+Hidden 元素在表单中不可见，它的作用是在提交表单的时候把任意的文本发送给服务器，hidden没有事件处理程序。
+15.4 表单验证实例
+
+图15-2 展示了一个示例表单，它使用了验证，包含了错误信息。
+    图15-2. A form that failed validation
+
+下面是我们进行验证js的表单，我们从onsubmit 的事件处理程序调用验证。
+<form>
+ 
+  Name: <input type="text" name="name" required><br>
+  <!-- \s* means optional space. \w+ means one or more alphanumeric chars-->
+  email: <input type="text" name="email" pattern="^\s*\w+@\w+\.\w+\s*$"><br>
+  <!-- \d{5} means exactly five digits -->
+  zipcode: <input type="text" name="zip" pattern="^\s*\d{5}\s*$"><br>
+  <!-- no validation on this field -->
+  unvalidated: <input type="text"><br>
+  <input type="submit">
+</form>
+具体技术js参见书。
+
+第十六章   脚本化Cookie
+16.1 cookie概述（ An Overview of Cookies）
+   Cookie是Web浏览器存储的少量命名数据，它与某个特定的网页或网站关联在一起。
+它是Web浏览器的临时内存，存储了一些临时数据，以便脚本或服务器程序从一个页面读取另一个页面的数据，服务器可以通过HTTP协议对客户端的Cookie进行读写操作。
+Javascript可以通过Document对象对Cookie进行操作。
+Cookie本身是一个字符串属性，我们可以把它看作一个String型变量，可以通作document.cookie读写，不过它是由一个或多个“名=值”（name=value）对组成，如果有多个，之间用“；”号隔开，所以名和值部分都不能含有“；”和“=”号，此外也不能还有“，”号和空白符，因此如果您不能确定cookie值里是否含有这些不允许的符号时请务必使用escape( ) 函数对其先编码，当然在读取时不要忘记使用unescape( ) 函数解码。
+2 Cookie的性质
+Cookie有四个性质，可以通过其对应的关键字来指定。
+2.1 名=值
+Cookie采用name=value的方式赋值，不过你读取出来的也是这种方式，也许您会使用类如split()、substring()等方法来筛出您想要的那个name对应的值，或许您花些时间写个方法来通过name直接获取其对应的值将是一个好主意。
+如何修改一个Cookie的值？
+如果您想改变一个Cookie的值，您只需要使用同一个名字再加一个新的值重新设置一下即可。
+例如：
+name=zhangping 是目前的cookie值，想将zhangping改为“a-bear”，只需如下操作即可：
+document.cookie = “name=a-bear”;
+如何删除一个Cookie的值？
+删除一个Cookie值您可以使用同一个名字外加一个任意值（因为你不再使用它了）和一个过期了的终止日期作为expires的值再设置一次即可。
+例如：
+var lastYear = new Date();
+lastYear.setFullYear((lastYear.getFullYear()-1));
+document.cookie = “name=zhangping;expires=”+lastYear.toGMTString();
+2.2 周期性
+Cookie默认的会话周期很短暂，一旦退出浏览器，此次的Cookie会话周期终止，这将说明您不能再读取过期的Cookie值了。
+如果想创建跨多个浏览器会话期持续存在的Cookie，那就要使用Cookie的expires性质，给它加一个终止日期，例如：
+name=value;expires=date
+注意：日期采用Date.toGMTString()编写的格式。
+例如你要创建一个持续1年的Cookie，可以这样写：
+var nextYear = new Date();
+nextYear.setFullYear((nextYear.getFullYear()+1));
+document.cookie = escape(“nike name=zhang ping”)+”;”+”espires=nextYear.toGMTSting()”;
+又如：
+var expire_days=30;
+var expire_date=new Date();
+var ms_from_now=expire_days*24*60*60*1000;
+expire_date.setTime(expire_date.getTime()+ms_from_now);
+var expire_string=expire_date.toGMTString();
+document.cookie="username=zhangping;expire="+expire_string;
+2.3 可见性
+可见性是指对于一个cookie而言，那些页面可以见到它，它指定了和cookie关联在一起的页面，默认，cookie会和创建它的页面以及与这个页面在同一目录下的所有页面和处于当前目录的子目录下的网页关联在一起；
+例如：
+位于http://www.sina.com.cn/game/hello.html的网页创建了一个cookie，那么位于http://www.sina.com.cn/game/howareyou.html和http://www.sina.com.cn/game/mygame/haha.html都可见，而http://www.sina.com.cn/hi.html和http://www.sina.com.cn/music/index.html都不可见；
+如果默认的可见范围无法满足您的要求，你可以通作cookie的path性质来重新指定可见范围来满足您的需求，例如：
+http://www.sina.com.cn/game/mygame/hello.html在设置cookie时指定path=”/game”;那么http://www.sina.com.cn/game/下的所有页面都与此cookie关联；如果指定path=”/”,那么整个www.sina.com.cn站点的页面都与这个cookie关联。
+默认情况下，只有和设置cookie的页面在同一个Web服务器上的页面才能访问这个cookie。但是很多情况下，一个站点的所有页面未必在一个Web服务器上，例如im.pica.com和img.pica.com是两个Web服务器，他们之间如果要共享一个cookie，就必须使用cookie的另一个性质：domain，如果此时将paht设为”/”,将domain设为“pica.com”,那么位于im.pica.com和img.pica.com两个Web服务器的“/”根目录下的所有页面都对这个cookie可见，当然，voice.pica.com的根目录的所有页面也都可以访问此cookie,但im.qq.com根目录下的页面则不能访问此cookie，因为他们不在一个域中，直接垮域操作是不允许的。
+2.4 安全性
+Cookie的最后一个性质是secure,它是一个布尔值,一般情况下，cookie是通过不安全的http协议连接传输的，如果将secure设置为true,那么只有服务器和客户端浏览器通过https或其他安全协议连接时，cookie才会被传输。
+3 Cookie的局限性
+Cookie主要用于存储少量的数据，并在不经常存储的情况下，它不是通用的通信机制，也不是通用的数据传输机制，要适度使用，并随时考虑在用户浏览器禁用cookie的情况下您应该给用户怎样的答案。
+Web浏览器需要保存的cookie总数不过300个，为每个web服务器保存的cookie个数不过20个，而每个cookie保存的数据不能超过4000字节。
+为了最大程度的避免“每个web服务器保存的cookie个数不过20个”的限制，将多个相关的变量存储到一个cookie中将是一个不错的设计。
+
+第十七章 文档对象模型
+文档对象模型（Document Object Model）是表示文档（如HTML文档）和访问，操作构成文档的元素（如HTML标记和字符串）的应用程序接口。
+   我们将讨论W3C DOM，它是由WWW定义的标准文档对象模型，它以树形结构表示HTML文档（和 XML文档），定义了遍历这个树和检查，修改树的节点的方法和属性。
+17.1 DOM概述
+17.1.1 把文档表示为树
+在DOM中，HTML层次结构表示为树形结构。树的节点表示文档中各项内容，HTML文档的树形表示主要包含表示元素或标记（如<br>,<p>）的节点和表示文本串的节点构成。举例：
+ <html>
+  <head>
+    <title>Sample Document</title>
+  </head>
+  <body>
+    <h1>An HTML Document</h1>
+    <p>This is a <i>simple</i> document.
+
+</html>
+17.1.2 节点
+  图17-1显示的DOM树是各种类型的Node对象的树。Node接口为遍历和操作树提供了属性和方法，
+17.1.2.1 节点的类型
+每个Node对象都有NodeType属性，这些属性指定节点的类型。
+下面的表介绍了常见的类型。
+
+
+ 
+         图 17-1 一个HTML文档的树形表现
+
+Table 17-1. 常见节点类型
+接口	nodeType 常量	nodeType 值
+Element	Node.ELEMENT_NODE	1
+Text	Node.TEXT_NODE	3
+Document	Node.DOCUMENT_NODE	9
+Comment	Node.COMMENT_NODE	8
+DocumentFragment	Node.DOCUMENT_FRAGMENT_NODE	11
+Attr	Node.ATTRIBUTE_NODE	2
+
+ DOM树的根节点是个Document对象，该对象的documentElement属性引用表示文档根元素的Element对象，对于HTML文档来说，就是在文档中显示或阴示出现<HTML>标记。
+17.1.2.2 性质
+用Element接口的getAttribute()方法，SetAttribute()方法，和removeAttribute()方法，可以查询，设置并删除一个元素的性质。
+17.1.3 DOM HTML API
+   DOM标准可以和HTML,XML一起使用，DOM标准还包含HTML文档专有的接口，
+  下面讲的DOM一致性和独立于语言的DOM接口。可以参见有关PDF文档。
+17.2 使用DOM的核心API  
+17.2.1 遍历文档
+   DOM把一个HTML文档表示为Node 对象的树，例17-1说明了如何遍历树。
+
+它是一个javascript函数，递归检查一个节点和它所有的子节点。在遍历的过程中增加它所遇到的HTML标记（即Element节点）数。
+例17-1 遍历文档中的节点
+  <head>
+<script>
+//该函数的参数是一个DOM node对象，
+function countTags(n) {                         // n is a Node
+    var numtags = 0;                            // Initialize the tag counter
+    if (n.nodeType == 1 /*Node.ELEMENT_NODE*/)  // Check if n is an Element
+        numtags++;                              // Increment the counter if so
+    var children = n.childNodes;                // Now get all children of n
+    for(var i=0; i < children.length; i++) {    // Loop through the children
+        numtags += countTags(children[i]);      // 递归调用
+    }
+    return numtags;                             // Return the total
+}
+</script>
+</head>
+<!-- Here's an example of how the countTags() function might be used -->
+<body onload="alert('This document has ' + countTags(document) + ' tags')">
+This is a <i>sample</i> document.
+
+注意：它定义的countTags（）函数是从事件处理程序onload中调用的，所以在文档被装载完之前，不会调用。在使用DOM时，这是一通用的要求，即在装载完文档之前，不会遍历或操作文档树。
+   除了childNodes外，Node接口还定义了其他属性。firstChild 和 lastChild属性  分别引用了一个节点的第一个子节点和最后一个子节点。nextSibling 和previousSibling 属性引用一个节点相临的兄弟节点。
+  例子；17-2 另一种遍历文档的方法
+  /**
+ * getText(n): Find all Text nodes at or beneath the node n.
+ * Concatenate their content and return it as a string.
+ */
+function getText(n) {
+    // Repeated string concatenation can be inefficient, so we collect
+    // the value of all text nodes into an array, and then concatenate
+    // the elements of that array all at once.
+    var strings = [];
+    getStrings(n, strings);
+    return strings.join("");
+
+    // This recursive function finds all text nodes and appends
+    // their text to an array.
+    function getStrings(n, strings) {
+        if (n.nodeType == 3 /* Node.TEXT_NODE */)
+            strings.push(n.data);
+        else if (n.nodeType == 1 /* Node.ELEMENT_NODE */) {
+            // Note iteration with firstChild/nextSibling
+            for(var m = n.firstChild; m != null; m = m.nextSibling) {
+                getStrings(m, strings);
+            }
+        }
+    }
+}
+17.2.2 搜索文档中特殊资源（Finding Elements in a Document）
+  我们用document.body引用引用一个HTML文档的<body>元素，这是一种便利的专有属性，如果不存在这个便利属性，可以用下面代码引用:
+document.getElementsByTagName("body")[0]
+  调用getElementsByTagName()方法将返回一个数组，它可以获取任何类型的HTML元素的列表。
+  还有一种其它方法，例如：
+<p id="specialParagraph">
+  var myParagraph = document.getElementById("specialParagraph");
+注意，getElementById() 方法不像 getElementsByTagName()那样返回一个数组，因为ID元素的值唯一，所以getElementById()只返回一个元素。
+getElementById() and getElementsByTagName()都是document对象的方法，Element 对象也定义了getElementsByTagName() 方法，它与Document的getElementsByTagName()方法类似，只是它返回的是一个元素，改元素是调用它的那个元素的后代，改方法不会搜索整个文档来查找特定类型的元素，而是只检索给定的元素。举例：
+//找到文档中特定的table元素，并统计它的列数
+var tableOfContents = document.getElementById("TOC");
+var rows = tableOfContents.getElementsByTagName("tr");
+var numrows = rows.length;
+
+17.2.3 修改一个文档
+
+第十八章 级联样式表和动态HTML
+
+本章侧重css,个人看属了解性质。具体内容可以看树，在此不做记录。
+
+
+第十九章 事件和事件处理（Events and Event Handling）
+概述：
+1 事件处理模型
+ 1 原始事件模型
+ 2 标准事件模型
+ 3 Internet Explorer 事件模型
+19.1 基本事件模型（Basic Event Handling）
+19.1.1事件和事件类型（Events and Event Types）
+   发生的事情不同，生成的事件不同。
+在原始事件模型中，事件是浏览器内部提取的。Javascipt不能直接操作事件。
+事件类型，其真实含义是响应事件时调用的事件处理程序名。
+  主要分为输入事件（input event）--低级事件,语义事件（semantic event）--高级事件.举例：当用户点击了submit按钮时，会触发三个输入处理程序。即onmousedown, onmouseup, and onclick,作为鼠标点击的结果，包含该按钮的HTML表单将生成onsubmit事件。
+  
+表19-1 事件处理程序和支持它们的 HTML元素
+处理程序	触发时机	支持
+onabort	图象装载被中断	<img>
+onblur	元素失去输入焦点	<button>, <input>, <label>, <select>, <textarea>, <body>
+onchange	Selection in a <select> element or other form element loses focus, and its value has changed since it gained focus.	<input>, <select>, <textarea>
+onclick	Mouse press and release; follows mouseup event. Return false to cancel default action (i.e., follow link, reset, submit).	Most elements
+ondblclick	Double-click.	Most elements
+onerror	Error when loading image.	<img>
+onfocus	Element gains input focus.	<button>, <input>, <label>, <select>, <textarea>, <body>
+onkeydown	Key pressed down. Return false to cancel.	Form elements and <body>
+onkeypress	Key pressed; follows keydown. Return false to cancel.	Form elements and <body>
+onkeyup	Key released; follows keypress.	Form elements and <body>
+onload	Document load complete.	<body>, <frameset>, <img>
+onmousedown	Mouse button pressed.	Most elements
+onmousemove	Mouse moved.	Most elements
+onmouseout	Mouse moves off element.	Most elements
+onmouseover	Mouse moves over element.	Most elements
+onmouseup	Mouse button released.	Most elements
+onreset	Form reset requested. Return false to prevent reset.	<form<
+onresize	Window size changes.	<body>, <frameset>
+onselect	Text selected.	<input>, <textarea>
+onsubmit	Form submission requested. Return false to prevent submission.	<form>
+onunload	Document or frameset unloaded.	<body>, <frameset>
+
+19.12  作为性质的事件处理程序
+  
+事件处理程序被设置为 javascript代码串，作为HTML的性质值。举例：
+
+<input type="button" value="Press Me" onclick="alert('thanks');">
+
+把事件处理程序表示为javascipt属性有两点好处：1 它减少了HTML和javascipt的混合。增加了代码的模块性。2 它使事件处理函数进行动态处理。
+
+
+  
+浅析JS运行机制
+
+从一个简单的问题谈起：
+<script type="text/javascript">
+alert(i); // ?
+var i = 1;
+</script>
+输出结果是undefined, 这种现象被称成“预解析”：JavaScript引擎会优先解析var变量和function定义。在预解析完成后，才会执行代码。如果一个文档流中包含多个script代码段（用script标签分隔的js代码或引入的js文件），运行顺序是：
+step1. 读入第一个代码段
+step2. 做语法分析，有错则报语法错误（比如括号不匹配等），并跳转到step5
+step3. 对var变量和function定义做“预解析”（永远不会报错的，因为只解析正确的声明）
+step4. 执行代码段，有错则报错（比如变量未定义）
+step5. 如果还有下一个代码段，则读入下一个代码段，重复step2
+step6. 结束
+上面的分析，已经能解释很多问题了，但老觉得欠缺点什么。比如step3里，“预解析”究竟是怎么回事？还有step4里，看下面的例子：
+<script type="text/javascript">
+alert(i); // error: i is not defined.
+i = 1;
+</script>
+为什么第一句会导致错误？JavaScript中，变量不是可以不定义吗？
+编译过程
+时间如白马过隙，书柜旁翻开恍如隔世般的《编译原理》，熟悉而又陌生的空白处有着这样的笔记：
+对于传统编译型语言来说，编译步骤分为：词法分析、语法分析、语义检查、代码优化和字节生成。
+但对于解释型语言来说，通过词法分析和语法分析得到语法树后，就可以开始解释执行了。 
+简单地说，词法分析是将字符流(char stream)转换为记号流(token stream), 比如将c = a - b;转换为：
+NAME "c"
+EQUALS
+NAME "a"
+MINUS
+NAME "b"
+SEMICOLON
+上面只是示例，更进一步的了解请查看 Lexical Analysis.
+《JavaScript权威指南》的第2章，讲的就是词法结构（Lexical Structure），ECMA-262 中也有描述。词法结构是一门语言的基础，很容易掌握。至于词法分析的实现那是另一个研究领域，在此不探究。
+可以拿自然语言来类比，词法分析是一对一的硬性翻译，比如一段英文，逐词翻译成中文，得到的是一堆记号流，还很难理解。进一步的翻译，就需要语法分析了，下图是一个条件语句的语法树：
+ 
+
+构造语法树的时候，如果发现无法构造，比如if(a { i = 2; }, 就会报语法错误，并结束整个代码块的解析，这就是本文开头部分的step2.
+通过语法分析，构造出语法树后，翻译出来的句子可能还会有模糊不清的地方，接下来还需要进一步的语义检查。对于传统强类型语言来说，语义检查的主要部分是类型检查，比如函数的实参和形参类型是否匹配。对于弱类型语言来说，这一步可能没有（精力有限，没时间去看JS的引擎实现，不敢确定JS引擎中是否有语义检查这一步）。
+通过上面的分析可以看出，对于JavaScript引擎来说，肯定有词法分析和语法分析，之后可能还有语义检查、代码优化等步骤，等这些编译步骤完成之后（任何语言都有编译过程，只是解释型语言没有编译成二进制代码），才会开始执行代码。
+上面的编译过程，还是无法更深入的解释文章开头部分的“预解析”，我们还得仔细探究下JavaScript代码的执行过程。
+执行过程
+周爱民在《JavaScript语言精髓与编程实践》的第二部分，对此有非常仔细的分析。下面是我的一些领悟：
+通过编译，JavaScript代码已经翻译成了语法树，然后会立刻按照语法树执行。
+进一步的执行过程，需要理解JavaScript的作用域机制，JavaScript采用的是词法作用域（lexcical scope）。通俗地讲，就是JavaScript变量的作用域是在定义时决定而不是执行时决定，也就是说词法作用域取决于源码，编译器通过静态分析就能确定，因此词法作用域也叫做静态作用域（static scope）。但需要注意，with和eval的语义无法仅通过静态技术实现，实际上，只能说JS的作用域机制非常接近lexical scope.
+JS引擎在执行每个函数实例时，都会创建一个执行环境（execution context）。execution context中包含一个调用对象（call object）, 调用对象是一个scriptObject结构，用来保存内部变量表varDecls、内嵌函数表funDecls、父级引用列表upvalue等语法分析 结构（注意：varDecls和funDecls等信息是在语法分析阶段就已经得到，并保存在语法树中。函数实例执行时，会将这些信息从语法树复制到 scriptObject上）。scriptObject是与函数相关的一套静态系统，与函数实例的生命周期保持一致。
+lexical scope是JS的作用域机制，还需要理解它的实现方法，这就是作用域链（scope chain）。scope chain是一个name lookup机制，首先在当前执行环境的scriptObject中寻找，没找到，则顺着upvalue到父级scriptObject中寻找，一直 lookup到全局调用对象（global object）。
+当一个函数实例执行时，会创建或关联到一个闭包（closure）。 scriptObject用来静态保存与函数相关的变量表，closure则在执行期动态保存这些变量表及其运行值。closure的生命周期有可能比函 数实例长。函数实例在活动引用为空后会自动销毁，closure则要等要数据引用为空后，由JS引擎回收（有些情况下不会自动回收，就导致了内存泄漏）。
+别被上面的一堆名词吓住，一旦理解了执行环境、调用对象、闭包、词法作用域、作用域链这些概念，JS语言的很多现象都能迎刃而解。
+小结
+至此，对于文章开头部分的疑问，可以解释得很清楚了：
+step3中所谓的“预解析”，其实是在step2的语法分析阶段完成，并存储在语法树中。当执行到函数实例时，会将varDelcs和 funcDecls从语法树中复制到执行环境的scriptObject上。
+step4中，未定义变量意味着在scriptObject的变量表中找不到，JS引擎会沿着scriptObject的upvalue往上寻找， 如果都没找到，对于写操作i = 1; 最后就会等价为 window.i = 1; 给window对象新增了一个属性。对于读操作，如果一直追溯到全局执行环境的scriptObject上都找不到，就会产生运行期错误。
+理解后，雾散花开，天空一片晴朗。
+最后，留个问题给大家：
+<script type="text/javascript">
+var arg = 1;
+function foo(arg) {
+alert(arg);
+var arg = 2;
+}
+foo(3);
+</script>
+请 问alert的输出是什么？
+

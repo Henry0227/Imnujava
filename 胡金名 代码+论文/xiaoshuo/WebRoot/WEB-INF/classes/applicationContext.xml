@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/db_xiaoshuo"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="welcome"></property>
+
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="30"></property>
+		<property name="maxWait" value="500"></property>
+		<property name="defaultAutoCommit" value="true"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+
+				<value>cn/book/model/Discuss.hbm.xml</value>
+				<value>cn/book/model/Admin.hbm.xml</value>
+				<value>cn/book/model/Article.hbm.xml</value>
+				<value>cn/book/model/Progenitor.hbm.xml</value>
+				<value>cn/book/model/Literature.hbm.xml</value>
+				<value>cn/book/model/Users.hbm.xml</value>
+				<value>cn/book/model/Book.hbm.xml</value>
+				<value>cn/book/model/Bookmark.hbm.xml</value>
+
+			</list>
+		</property>
+	</bean>
+
+	<bean id="adminDao" class="cn.book.dao.impl.AdminDaoImple">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="adminSerice" class="cn.book.service.impl.AdminServiceImpl">
+		<property name="adminDao" ref="adminDao"></property>
+	</bean>
+
+	<bean id="adminAction" class="cn.book.action.AdminAction" scope="prototype">
+		<property name="adminService" ref="adminSerice"></property>
+	</bean>
+
+	<bean id="bookDao" class="cn.book.dao.impl.BookDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<bean id="bookService" class="cn.book.service.impl.BookServiceImpl">
+		<property name="bookDao" ref="bookDao"></property>
+	</bean>
+
+	<bean id="bookAction" class="cn.book.action.BookAction"  scope="prototype">
+		<property name="bookService" ref="bookService"></property>
+		<property name="literatureService" ref="literatureService"></property>
+	</bean>
+	
+	<bean id="articleDao" class="cn.book.dao.impl.ArticleDaoImpl">
+	   <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="articleService" class="cn.book.service.impl.ArticleServiceImpl">
+	    <property name="articleDao" ref="articleDao"></property>
+	</bean>
+	
+	<bean id="articleAction" class="cn.book.action.ArticleAction"  scope="prototype">
+	    <property name="articleService" ref="articleService"></property>
+	    <property name="bookService" ref="bookService"></property>
+	</bean>
+	
+	<bean id="discussDao" class="cn.book.dao.impl.DiscussDaoImpl">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="discussService" class="cn.book.service.impl.DiscussServiceImpl">
+	      <property name="discussDao" ref="discussDao"></property>
+	</bean>
+	
+	<bean id="discussAction" class="cn.book.action.DiscussAction"  scope="prototype">
+	    <property name="discussService" ref="discussService"></property>
+	    <property name="bookservice" ref="bookService"></property>
+	</bean>
+	
+	<bean id="userDao" class="cn.book.dao.impl.UserDaoImpl">
+	   <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="userService" class="cn.book.service.impl.UserServiceImpl">
+	    <property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	<bean id="userAction" class="cn.book.action.UserAction"  scope="prototype">
+	    <property name="userService" ref="userService"></property>
+	</bean>
+	
+	<bean id="literatureDao" class="cn.book.dao.impl.LiteratureDaoImpl">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="literatureService" class="cn.book.service.impl.LiteratureServiceImpl">
+	    <property name="literatureDao" ref="literatureDao"></property>
+	</bean>
+	
+	<bean id="literatureAction" class="cn.book.action.LiteratureAction"  scope="prototype">
+	    <property name="literatureService" ref="literatureService"></property>
+	</bean>
+	
+	<bean id="bookmarkDao" class="cn.book.dao.impl.BookmarkDaoImpl">
+	    <property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+    
+    <bean id="bookmarkService" class="cn.book.service.impl.BookmarkServiceImpl">
+        <property name="bookmarkDao" ref="bookmarkDao"></property>
+    </bean>
+    
+    <bean id="bookmarkAction" class="cn.book.action.BookmarkAction"  scope="prototype">
+        <property name="bookmarkService" ref="bookmarkService"></property>
+        
+    </bean>
+    
+    <bean id="progenitorDao" class="cn.book.dao.impl.ProgenitorDaoImpl">
+       <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="progenitorService" class="cn.book.service.impl.ProgenitorServiceImpl">
+        <property name="progenitorDao" ref="progenitorDao"></property>
+    </bean>
+    
+    <bean id="progenitorAction" class="cn.book.action.ProgenitorAction"  scope="prototype">
+         <property name="progenitorService" ref="progenitorService"></property>
+         <property name="userService" ref="userService"></property>
+    </bean>
+    
+    <bean id="downAction" class="cn.book.action.DownAction"  scope="prototype"></bean>
+    
+ 
+</beans>

@@ -1,0 +1,96 @@
+using   System.Diagnostics;   
+   如果是dos   
+   Process.Start("cmd.exe");   
+   如果是其他文件   
+   Process.Start("绝对路径+文件名.exe");   
+   ------------------------------------   
+   如何在ｃ＃中调用外部ｄｏｓ程序？   
+   使用Process对象：       
+   System.Diagnostics.Process     p=new     System.Diagnostics.Process();       
+   p.StartInfo.FileName="arj.exe"     ;//需要启动的程序名       
+   p.StartInfo.Arguments="-x     sourceFile.Arj     c:\temp";//启动参数       
+   p.Start();//启动       
+   if(p.HasExisted)//判断是否运行结束       
+     p.kill();   
+-------------------------------------------------------------------------------------------------------------------------------------
+///   <summary>   
+   ///   启动其他的应用程序   
+   ///   </summary>   
+   ///   <param   name="file">应用程序名称</param>   
+   ///   <param   name="workdirectory">应用程序工作目录</param>   
+   ///   <param   name="args">命令行参数</param>   
+   ///   <param   name="style">窗口风格</param>   
+   public   static   bool   StartProcess(string   file,string   workdirectory,string   args,ProcessWindowStyle   style)   
+   {   
+   try   
+   {   
+   Process   myprocess   =   new   Process();   
+   ProcessStartInfo   startInfo   =   new   ProcessStartInfo(file,args);   
+   startInfo.WindowStyle   =   style;   
+   startInfo.WorkingDirectory   =   workdirectory;   
+   myprocess.StartInfo   =   startInfo;   
+   myprocess.StartInfo.UseShellExecute   =   false;   
+   myprocess.Start();   
+   return   true;   
+   }   
+   catch(Exception   e0)   
+   {   
+   MessageBox.Show("启动应用程序时出错！原因："   +   e0.Message);   
+   }   
+   return   false;   
+   }   
+    
+    
+    
+   string   parms   =   ""   +   GlobalObject.GetInstance().UserID   +   "   "   +   GlobalObject.GetInstance().UserPassword;   
+   if   (PublicMethods.StartProcess(Application.StartupPath   +   @"\uptool\uptool.exe",Application.StartupPath   +   "\\UpTool",parms,ProcessWindowStyle.Normal))   
+   {   
+   Environment.Exit(0);   
+   }   
+----------------------------------------------------------------------------------------------------------------------
+Process.Start("IExplore.exe",   "http://community.csdn.net/Expert/topic/4021/4021327.xml?temp=.9493524"); 
+System.Diagnostics.ProcessStartInfo   startInfo   =   new   System.Diagnostics.ProcessStartInfo(   );   
+   startInfo.FileName   =   "执行EXE的文件名";   
+   startInfo.Arguments   =   "参数数组";   
+   System.Diagnostics.Process.Start(   startInfo   );
+----------------------------------------------------------------------------------------------------------------------------
+1.有好多时,我们需要调用外部的EXE程序,并且要等它运行完毕,我们才可以继续下面的动作,那我们怎样去实现了,请看以下代码.
+         '怎样等待外部程序运行完毕.
+         '从系统资料夹读入文件
+         Dim sysFolder As String = _
+                     Environment.GetFoldERPath(Environment.SpecialFolder.System)
+         '创建一个新的进程结构
+         Dim pInfo As New ProcessStartInfo()
+         '设置其成员FileName为系统资料的Eula.txt
+         pInfo.FileName = sysFolder & "\eula.txt"
+         '运行该文件
+         Dim p As Process = Process.Start(pInfo)
+         '等待程序装载完成
+         p.WaitForInputIdle()
+         '等待进行程退出
+         p.WaitForExit()
+         '继续执行下面的代码
+         MessageBox.Show("继续执行代码")
+
+2.我们想在5秒钟后,强行关闭它.而不是需要我手工关闭.
+     '设置退出时间
+     Dim timeOut As Integer = 5000
+     Dim sysFolder As String = _
+         Environment.GetFolderPath(Environment.SpecialFolder.System)
+     Dim pInfo As New ProcessStartInfo()
+     pInfo.FileName = sysFolder & "\eula.txt"
+     Dim p As Process = Process.Start(pInfo)
+     p.WaitForInputIdle()
+     p.WaitForExit(timeOut)
+     '检查是否在超时前已关闭了.
+     If p.HasExited = False Then
+         '进行程还在运行
+         '看进程有没有回应
+         If p.Responding Then
+             p.CloseMainWindow() '关闭窗口
+         Else
+             p.Kill()   '强行中断
+         End If
+     End If
+     MessageBox.Show("继续执行代码")
+

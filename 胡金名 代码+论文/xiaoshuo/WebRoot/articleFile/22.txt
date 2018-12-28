@@ -1,0 +1,137 @@
+JSTL对Map集合的操作
+1、迭代
+      当forEach 的items属性中的表达式的值是java.util.Map时，则var中命名的变量的类型就是java.util.Map.Entry。这时var=entry的话，用表达式${entry.key}取得键名。用表达式${entry.value}得到每个entry的值。这是因为java.util.Map.Entry对象有getKey和getValue方法，表达式语言遵守JavaBean的命名约定。
+     例：
+Html代码     
+1.	<c:forEach items="${map}" var="entry">  
+2.	       <c:out value="${entry.key}" />  
+3.	        <c:out value="${entry.value}" />  
+4.	</c:forEach>  
+2、根据key求值
+      如果事先知道key那么很容易根据${map.key值}就可以得到值对象，但是如果key是一个变量呢？有一个问题,如果给定一个key的变量如何使用EL得到对象呢,这里需要使用EL表达式中的[]来解决。
+       例：
+Html代码     
+1.	<c:out value="${map[key]}" />  
+2.	<!-- 这里的map就是 java.util.Map对像，key是这个map里的一个key -->  
+       
+ 
+1、迭代
+Map的每个对象以key=value的形式给出
+当forEach tag的item属性中的表达式的值是java.util.Map时，在var中命名的变量被设置为类型是java.util.Map.Entry的item。这时，迭代变量被称为entry,因此，用表达式${entry.key}取得键名。
+在下面的例子中你会看到，可以用表达式${entry.value}得到每个entry的值。这是因为java.util.Map.Entry对象有getKey和getValue方法，表达式语言遵守JavaBean的命名约定。
+通常，JSP EL表达式${a.b.c.d}是用代码a.getB().getC().getD()来计算的。这种表达式是对JavaBean属性的相继调用的简化。
+示例: 
+Html代码     
+1.	<%@ page language="java" pageEncoding="utf-8"%>  
+2.	<jsp:directive.page import="com.xaccp.vo.BookAdapter"/>  
+3.	<%@ taglib prefix="c" uri="/WEB-INF/c.tld"  %>  
+4.	<jsp:directive.page import="java.util.Hashtable"/>  
+5.	<jsp:directive.page import="com.xaccp.vo.Book"/>  
+6.	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">  
+7.	<html:html locale="true">  
+8.	  <head>  
+9.	   <%   
+10.	     Hashtable table=new Hashtable();   
+11.	     BookAdapter ba=new BookAdapter();   
+12.	     table.put("aaa",new Book(1,"abc"));   
+13.	     table.put("bbb",new Book(2,"bbb"));   
+14.	     table.put("ccc",new Book(3,"cccc"));   
+15.	     pageContext.setAttribute("table",table);   
+16.	    %>  
+17.	  </head>  
+18.	    
+19.	  <body>  
+20.	  
+21.	    <hr>  
+22.	    <c:forEach items="${table}" var="aaa">  
+23.	     <c:set var="key" value="${aaa.key}" ></c:set>  
+24.	     <c:set var="book" value="${aaa.value}"></c:set>  
+25.	      ${key }=${book }111  name:${book.bookID}<br>  
+26.	  
+27.	    </c:forEach>  
+28.	  </body>  
+29.	</html:html>  
+30.	  
+31.	   
+ 2、根据key变量求值
+如果事先知道key那么很容易根据${map.key值}就可以得到值对象，但是如果key是一个变量呢？
+有一个问题,如果给定一个key的变量如何使用EL得到对象呢,这里需要使用EL表达式中的[]来解决,解决方法如示例: 
+Html代码     
+1.	<%@ page language="java" pageEncoding="utf-8"%>      
+2.	<jsp:directive.page import="com.xaccp.vo.BookAdapter"/>      
+3.	<%@ taglib prefix="c" uri="/WEB-INF/c.tld"  %>      
+4.	<jsp:directive.page import="java.util.Hashtable"/>      
+5.	<jsp:directive.page import="com.xaccp.vo.Book"/>      
+6.	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">      
+7.	<html:html locale="true">      
+8.	  <head>      
+9.	   <%      
+10.	     Hashtable table=new Hashtable();      
+11.	     table.put("aaa",new Book(1,"abc"));      
+12.	     table.put("bbb",new Book(2,"bbb"));      
+13.	     table.put("ccc",new Book(3,"cccc"));      
+14.	     pageContext.setAttribute("table",table);      
+15.	    %>      
+16.	  </head>      
+17.	       
+18.	  <body>      
+19.	    This a struts page. <br>      
+20.	    <c:set var="keys" value="bbb" ></c:set>      
+21.	    <c:set var="book" value="${pageScope.table[pageScope.keys]}"></c:set>      
+22.	 ${keys }=${book}      
+23.	<!-- 这里的${book就是对应于key值得book对象} -->      
+24.	    <br>      
+25.	  </body>      
+26.	</html:html>  
+
+
+JSTL与EL表达式（为空判断） 
+一、循环遍历集合 
+
+1、在jsp中引入标准函数声明 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>  
+
+2、若要判断集合的大小，则需要引入如下声明 
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+
+3、如何使用jstl判断集合是否为空 
+${user}为集合,user为集合名 
+<c:if test="${empty user}">无信息!</c:if>为空 
+<c:if test="${!empty user}">其它</c:if>非空 
+
+4、如何取得集合的大小 
+${fn:length(集合名<如果是session中的集合则应该加上sessionScope.键>)} 
+${fn:length(map)} 
+
+5、如何取得保存在session中的对象? 
+${sessionScope.键.对象属性} 
+
+6、varStatus显示循环变量的状态 
+例:<tag:forEach var="currentFood" items="${sessionScope.foods}" varStatus="status" 
+<tag:if test="${status%2==1}"> 
+..................... 
+</tag:if> 
+</tag:forEach> 
+其中status这个变量就记录了循环变量的状态 
+
+7、如何遍历Map集合 
+<c:forEach var="foodmap" items="${sessionScope.cart}" varStatus="status"> 
+<c:set var="subtotal" value="${foodmap.value.bean.foodPrice*foodmap.value.quantity}"></c:set> 
+</c:forEach> 
+遍历Map集合的值: 
+foodmap:保存session中的map 
+foodmap.value:取得map的值，即获取保存在map中的一个对象 
+要获取对象中的数据，必须用foodmap.value.quantity去点对象的属性(quantity就是对象的属性) 
+8、对象属性为空显示默认值 
+<c:forEach var="customer" items="${customers}"> 
+    <tr> 
+      <td><c:out value="${customer.lastName}"/></td> 
+      <td><c:out value="${customer.phoneHome}" default="no home phone specified"/></td> 
+      <td> 
+        <c:out value="${customer.phoneCell}" escapeXml="false"> 
+          <font color="red">no cell phone specified</font> 
+        </c:out> 
+      </td> 
+    </tr> 
+  </c:forEach>
+

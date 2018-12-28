@@ -1,0 +1,273 @@
+行政审批5.0开发规范
+
+一．	项目框架包结构图
+1.	src目录
+src下分四个包目录：
+business
+   该包下保存操作类，公用操作建立一个包common,该包下存放公用操作类。其余每个子系统建立一个包，包名以子系统英文名(子系统英文名见4)命名。
+com.aeonsoft.struts
+    改包下共有10个包，每个包以子系统英文名命名。各个子系统包下放置各个子系统的ACTION文件
+data
+    该包下放置数据库操作类文件，文件名以Db开头+自定义名，如DbDatabase.java
+obj
+该包下放置10个包，每个包以子系统英文名命名。各个子系统包下放置各个子系统中的对象文件，对象文件以Obj结尾。如：UserObj.java。
+2.	webroot目录
+webroot目录下包括js文件夹用于存放js文件。Js文件夹下包括login.js与main.js，allevent.js三个单独文件，对应登录与主框架页面。另外包括10个文件夹，文件夹名以子系统英文名命名。下面存放各个子系统中的js文件。
+登录页面为login.jsp，框架主页面为main.jsp存放于根目录下
++-
+二．	项目框架文件名称规范
+1.类文件命名 
+（1）所有操作类文件放置在business目录下，所有文件以子系统分包，存放在所在子系统包下，名称以子系统模块英文名+Do的方式命名。（各个子系统模块英文名见4）
+（2）所有ACTION文件存放在com.aeonsoft.struts下，以子系统分包，
+     各个文件以子系统模块英文名+Action.java的方式命名。
+2.js文件命名
+所有js文件在webroot/js下，以子系统英文名分文件夹，每个js文件对应一个子系统模块，以该子系统模块英文名命名。
+
+三．	项目开发命名规范
+     
+四．	子系统英文包名
+
+系统管理子系统     sysSet
+   系统维护        SystemAud
+      使用单位维护 DeptUseAudit
+      审批单位维护 DeptAudit
+      审批窗口维护 WinAudit
+      角色维护     RoleAudit
+      权限分配     RightSet
+      用户管理     UserManage
+      系统参数配置 SysParam
+      日志管理     LogManage
+      模块管理     MoudleManage
+   基础维护        BaseAud
+      审批事项维护 AuditItem
+      申请材料维护 ApplyStear
+      收费项目维护 FeeItem
+      证照结构维护 licenseAudit
+      审批流程配置 AuditFlow
+      审批表单管理 AuditForm
+      消息服务管理 Information
+      数据字典维护 Dictionary
+   数据维护        DataAud
+      资料备份     DataBackup
+      资料恢复     DataRestore
+      密码重置     NewPwd
+      数据转结     DataTransfer
+   应用维护        ApplyAud
+      考勤规则定义 WorkRule
+      考核指标定义 ExamineTarget
+      刊物模板定义 JournalBoard
+      评价指标定义 ScoreTarget
+      投诉类别定义 ComplainTier
+      表扬类别定义 PraiseTier
+   个人秘书        PersonSecretary
+      消息服务     MsgServer
+      日程安排     SchedulePlan
+      内部邮件     InsideMail
+      请假管理     LeaveManage
+      密码修改     PwdUpdate
+      通讯薄       AddressBook
+
+
+业务管理子系统     operationSet
+   业务咨询        OperatingRefer
+      中心介绍     FocoIntro
+      单位介绍     DeptIntro
+      窗口介绍     WinIntro
+      审批项目     HearItem
+      政策法规     PolicyCode
+      业务管理     OperatingManage
+      业务申请     OperApply
+      网上预审     WebInquiry
+      业务受理     OperHear
+      待办业务     WaitOper
+      制证打文     MarkPaper
+      证文发放     ProvidePaper
+      已办业务     FulfillOper
+      回馈单打印   FeedbackPrint
+   预警信息        WarningMessage
+      提醒办件     AwokeTrancred
+      过期办件     nullifyTrancred
+   督办反馈        SahFeedback
+      督办信息     MonitorMeg
+      督办反馈     MonitorFeedback
+   综合查询        ColligationQuery
+      时限查询     TimeLimit
+      并联项目查询 ApposeItem
+      重大项目查询 BignessItem
+      异常结果查询 ExceptBear
+      收费查询     CollectFees
+   统计分析        StatAnalyse
+      业务量统计   OperCountStat
+      办理时间分布统计 FulfillTimeStat
+      办理结果统计 FulfillBearStat
+      收费情况统计 CollectFeesStat
+      零办件统计   ZeroTrancredStat
+      结办件统计   FinishTrancredStat
+      红黄牌统计   RedYellowStat
+   综合信息        CollmegMessage
+      内部公告     InsideNotice
+      刊物浏览     JournalSkim
+      考核浏览     ExamineSkim
+      考勤浏览     WorkSkim
+      表扬浏览     PraiseSkim
+      投诉浏览     ComplainSkim
+      网上咨询回复 WebaskReply
+   个人秘书
+      同系统管理子系统个人秘书
+
+
+中心管理子系统     focoSet
+   业务督办        OperatingSupervise
+      业务异常处理 OperExceptDispose
+      联办受理批示 LinkHearShow
+      督办指令发布 MonitorShowIssue
+      督办结果查询 MonitorBearQuery
+      联席会议登记 LinkMeekingReg
+      督办调查登记 MonitorSurveyReg
+      督办协调登记 MonitorAssistReg
+      监督检查登记 OverseeCheckReg
+   预警纠错        RecoErroy
+      预警信息     WarningMeg
+      督办信息    
+      同业务管理子系统督办反馈督办信息
+      红黄牌信息   RedYellowMeg
+   综合查询
+      同业务管理子系统综合查询
+   统计分析
+      同业务管理子系统统计分析
+   辅助办公        AssistOffice
+      公文管理     BumfManage
+      考勤管理     WorkManage
+      请假管理 
+      同系统管理子系统个人秘书请假管理
+      绩效考核     PerforExamine
+      投诉管理     ComplainManage
+      表扬管理     PraiseManage
+      财务管理     FinanceManage
+      资产管理     AssetManage
+      电子刊物     ElectronJournal
+      公告管理     NoticeManage
+      业务管理子系统综合信息内部公告
+      网上咨询回复 
+      同业务管理子系统综合信息网上咨询回复
+   个人秘书
+      同系统管理子系统个人秘书
+
+
+总台服务子系统     alwaySet
+   申请登记        ApplyReg
+   企业设立        ObjectFound
+   基建项目        BaseBuild
+   待办业务        
+   同业务管理子系统业务管理待办业务
+   业务督办       
+   中心管理子系统业务督办
+   单据中心        SingleProof
+   跟踪催办        ScoutHurry
+   结果反馈        BearFeedback
+   查询统计        QueryStat
+   个人秘书
+      同系统管理子系统个人秘书
+
+
+总台叫号子系统     alwaycallSet
+   申请业务        OperApply
+   业务咨询        
+   业务管理子系统业务咨询
+   操作说明        HandleShow
+
+
+统一收退费管理子系统  acceptEditFeeSet
+   收费管理        AcceptFeeManage
+   退费管理        EditFeeManage
+   费用统计        FeesStat
+      减免缓统计   MinusAvoidSlowStat
+      费用统计     FeesAllStat
+   个人秘书
+      同系统管理子系统个人秘书
+
+
+电子档案管理子系统 electronRecordSet
+   档案管理        RecordManage
+      档案目录     RecordCatalog
+      档案转换     RecordSwitch
+      档案归档     RecordRevert
+      档案分发     RecordSend
+      调阅授权     WarrantReader
+      档案查阅     RecordReader
+   个人秘书
+      同系统管理子系统个人秘书
+
+
+网上申报子系统     internetApplySet
+   首页            HeadPage
+   办事指南        BestowManual
+   在线咨询        OnlineRefer
+   在线投诉        OnlineComplain
+   网上查询        InterQuery
+   网上申报        InterApply
+   县区上报        CountyOnreply
+   操作指南        OperateManual
+
+
+远程审批监管子系统 longSuperviseSet
+   审批业务        HearOper
+      待办业务     
+      业务管理子系统业务管理-待办业务
+      已办业务     AchieveOperat
+   督查督办        MonitorTransact
+      预警信息     
+      业务管理子系统预警信息
+      督办信息     
+      业务管理子系统督办反馈督办信息
+      红黄牌信息   
+      中心管理子系统预警纠错红黄牌信息
+   效能督办        AbilityTransact
+      考勤浏览     
+      业务管理子系统综合信息考勤浏览
+      咨询浏览     ReferSkim
+      投诉浏览     
+业务管理子系统综合信息投诉浏览
+      表扬浏览     
+业务管理子系统综合信息表扬浏览
+   综合查询
+      业务管理子系统综合查询
+   统计分析
+      业务管理子系统统计分析
+   个人秘书
+      系统管理子系统个人秘书
+
+
+电子监察子系统     electronSuperviseSet
+   实时监察        OntimeVise
+      综合监察     IntrgrateVise
+      时限监察     TimelimitVise
+业务管理子系统综合查询    里有时限查询
+      异常结果监察 ExceptBearVise
+业务管理子系统综合查询    里有异常结果查询
+      并联项目监察 ApposeItemVise
+业务管理子系统综合查询    里有并联项目查询
+      重大项目监察 BignessItemVise
+业务管理子系统综合查询    里有重大项目查询
+      收费监察     CollectFeesVise
+业务管理子系统综合查询    里有收费查询
+      投诉监察     ComplainVise
+业务管理子系统综合信息    里有投诉浏览
+   视频监控        VideoControl
+预警纠错
+中心管理子系统预警纠错
+   绩效测评        PerforLean
+      绩效指标定义 PerformanceGuide
+      绩效测评     PerformanceJudge
+      绩效结果查询 PerformanceFruit
+   综合查询
+      审批规范查询 eappCriterion
+      业务管理子系统综合查询
+   统计分析
+      业务管理子系统统计分析
+      时限违规业务统计 TimelimitGoolStat
+   主题展示        ThemeShow
+   个人秘书
+      系统管理子系统个人秘书
+
+
